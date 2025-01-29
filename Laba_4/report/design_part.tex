@@ -1,0 +1,351 @@
+\chapter{Конструкторская часть}
+
+\section{Вспомогательные структуры} 
+Для программной реализации алгоритма сначала опишем вспомогательные структуры
+\begin{enumerate}
+	\item \texttt{Matrix}
+	\begin{itemize}
+		\item Поля: int rows, int columns, int un\_zero, int** array,
+		\item Инициализация: Matrix(), Matrix(int size), Matrix(int rows, int columns),
+		\item Методы: print() -- вывод содержмого,
+	\end{itemize}
+	
+	\item \texttt{CompressedMatrix},
+	\begin{itemize}
+		\item Поля: int* AN, int* D, int len\_AN = 0, int size,
+		\item Инициализация: CompressedMatrix(), CompressedMatrix(int* AN, int* D, int len\_AN, int size) Matrix(int size),
+		\item Методы: print() -- вывод содержмого,
+	\end{itemize}
+	
+	\item \texttt{KRMCompressedMatrix}
+	\begin{itemize}
+		\item Поля: int* AN, int* NR, int* NC, int* JR, int* JC, int len\_AN, int rows, int columns,
+		\item Инициализация: KRMCompressedMatrix(), KRMCompressedMatrix(Matrix* mat), KRMCompressedMatrix(map<pair<int, int>, int>* coords, int rows, int columns), KRMCompressedMatrix(int len\_AN, int rows, int columns, int*\& AN, int*\& NR, int*\& NC, int*\& JR, int*\& JC),
+		\item Методы: print() -- вывод содержмого,
+	\end{itemize}
+\end{enumerate}
+Так же во всех структурах переопределён оператор присваивания, учитывающий необходимость чистки памяти из под динамических массивов. Пример на листинге \ref{list0}.
+\begin{lstlisting}[label = list0, caption = пример опертара присваивания для структуры CompressedMatrix]
+	CompressedMatrix& operator= (const CompressedMatrix& rhs) {
+		if (this == (&rhs)) {
+			cout << "selfassignment" << "\n";
+			return *this;
+		}
+		clear();
+		
+		this->size = rhs.size;
+		this->len_AN = rhs.len_AN;
+		this->AN = new int[len_AN];
+		this->D = new int[size];
+		
+		for (int i = 0; i < len_AN; i++) {
+			AN[i] = rhs.AN[i];
+		}
+		for (int i = 0; i < size; i++) {
+			D[i] = rhs.D[i];
+		}
+		return *this;
+	}
+	
+	void clear() {
+		if (AN != nullptr) {
+			delete[] AN;
+			AN = nullptr;
+		}
+		if (D != nullptr) {
+			delete[] D;
+			D = nullptr;
+		}
+	}
+\end{lstlisting}
+
+\section{Вспомогательные функции} 
+Для программной реализации алгоритма опишем вспомогательные функции
+\begin{enumerate}
+	\item \texttt{usual\_addition(Matrix* \_1, Matrix* \_2)},
+	\begin{itemize}
+		\item тип возвращаемого значения: Matrix,
+		\item описание: суммирует матрицы стандартным алгоритмом,
+	\end{itemize}
+	
+	\item \texttt{usual\_multiplication(Matrix* array\_l, Matrix* array\_r)}
+	\begin{itemize}
+		\item тип возвращаемого значения: Matrix,
+		\item описание: умножает матрицы стандартным алгоритмом,
+	\end{itemize}
+	
+	\item \texttt{parse(string str, int len, Matrix* mat)}
+	\begin{itemize}
+		\item тип возвращаемого значения: int*,
+		\item описание: разбивает строку из файла по элементам и проверяет их количество,
+	\end{itemize}
+	
+	\item \texttt{read\_matrix(Matrix filename)}
+	\begin{itemize}
+		\item тип возвращаемого значения: Matrix,
+		\item описание: используя функцию $parse$ для каждой строки из файла, считывает весь файл занося его в массив созданной структуры Matrix, в случае ошибки завершает работу программы,
+	\end{itemize}
+	
+	\item \texttt{COMPARE(Matrix* \_1, Matrix* \_2)}
+	\begin{itemize}
+		\item тип возвращаемого значения: void,
+		\item описание: сравнивает по координатно две матрицы и в случае несовпадения элементов, выводит координату по которой элементы различны,
+	\end{itemize}
+	\newpage
+\end{enumerate}
+\section{Алгоритм упаковки матрицы по Дженнингсу}
+Алгоритм реализован в виде функции create\_AN, принимающий в качестве аргументов следующие объекты
+\begin{enumerate}
+	\item \texttt{matrix} -- двумерный массив структуры \texttt{Matrix}, которая будет сжата,
+	
+	\item \texttt{size} -- размер матрицы,
+	
+	\item \texttt{*an\_size} -- ссылка на переменную, хранящую длину массива \texttt{AN} со значимыми элементами,
+	
+	\item \texttt{**D} -- ссылка на динамический массив \texttt{D} с индексами элементов главной строки относительно массива \texttt{AN},
+	
+	\item \texttt{**AN} -- ссылка на динамический массив \texttt{AN} со значимыми элементами,
+\end{enumerate}
+\subsection*{Поля и начальная настройка}
+\begin{enumerate}
+	\item \texttt{an\_loc}
+	\begin{itemize}
+		\item тип: \texttt{vector<int>},
+		\item описание: динамический массив, заполняющийся всеми значимыми элементами. После выполнения алгоритма будет скопирован в переданный ,
+	\end{itemize}
+	
+	\item \texttt{glob\_ind}
+	\begin{itemize}
+		\item тип: \texttt{int},
+		\item описание: отображает текущую длину, \texttt{an\_loc},
+	\end{itemize}
+	
+	\item \texttt{last\_ind}
+	\begin{itemize}
+		\item тип: \texttt{int},
+		\item описание: количество элементов, определяемое для каждой строки, которе нужно сохранить в \texttt{AN},
+	\end{itemize}
+\end{enumerate}
+
+\subsection*{Этапы работы алгоритма}
+Алгоритм реализован в функции \texttt{create\_an}. \texttt{i} -- индекс строки матрицы, \texttt{j} -- индекс столбца матрицы 
+
+\begin{enumerate}
+	\item \texttt{D[i] = glob\_ind}, \text{last\_ind = i},
+	
+	\item Цикл по столбцам матрицы (j от 0 до \texttt{size}),
+	\begin{itemize}
+		\item если элемент матрицы с координатами (im j) не ноль, то присваиваем \texttt{last\_ind} значение \texttt{j},
+	\end{itemize}
+	
+	\item Цикл по столбцам матрицы (j от i до \texttt{last\_ind + 1}),
+	\begin{itemize}
+		\item добавляем в \texttt{an\_loc} элемент матрицы с координатами (i, j),
+	\end{itemize}
+	
+	\item Прибавляем к \texttt{glob\_ind} количество добавленных элементов $last\_ind - i + 1$,
+	
+	\item цикл продолжается до того как не будут перебраны все строки матрицы,
+\end{enumerate}
+
+\section{Алгоритм распаковки матрицы сжатой по Дженнингсу}
+Для распаковки матрицы используется функция \texttt{matrix\_unpackagin}, получающая на вход ссылку на упакованную матрицу \texttt{*comp\_mat} и возвращающая распакованную матрицу. Алгоритм реализованный в этой функции будет следующий.
+\subsection*{Поля и начальная настройка}
+\begin{enumerate}
+	\item \texttt{ans(comp\_mat->size)}
+	\begin{itemize}
+		\item тип: \texttt{Matrix},
+		\item описание: результирующая матрица,
+	\end{itemize}
+	
+	\item \texttt{row}
+	\begin{itemize}
+		\item тип: \texttt{int},
+		\item описание: строка результирующей матрицы,
+	\end{itemize}
+	
+	\item \texttt{column}
+	\begin{itemize}
+		\item тип: \texttt{int},
+		\item описание: столбец результирующей матрицы,
+	\end{itemize}
+\end{enumerate}
+
+\subsection*{Этапы работы алгоритма}
+\begin{enumerate}
+	\item Цикл (i от 0 до \texttt{comp\_mat->len\_AN}),
+	\begin{itemize}
+		\item \texttt{columnn++},
+		\item если индекс элемента из \texttt{AN} (\texttt{i}) совпадает с индексом элемента главной диагонали строки \texttt{row}, то \texttt{row++} и \texttt{columnn = row},
+		\item присваиваем значение массива \texttt{AN} под индексом \texttt{i} элементам матрицы с координами \texttt{(row, column)} и \texttt{(column, row)},
+	\end{itemize}
+	\item после окончания цикла, функция возвращает \texttt{ans},
+\end{enumerate}
+
+\section{Алгоритм сложения матриц сжатых по схеме Дженнингса}
+Для вычисления суммы матриц сжатых по Дженнингсу реализована функция \texttt{sum\_\-pack\_matrix}, получающая на вход две ссылки на упакованные матрицы \texttt{*comp\_mat\_1} и \texttt{*comp\_\-mat\_2} и возвращающая упакованную матрицу, которая является суммой двух изначальных. Алгоритм реализованный в этой функции будет следующий.
+\subsection*{Поля и начальная настройка}
+\begin{enumerate}
+	\item \texttt{loc\_sum},
+	\begin{itemize}
+		\item тип: \texttt{*vector<int>[\_1->size]},
+		\item описание:двумерный массив хранящий массивы покоординатно сложенных элементов из первой и второй матриц,
+	\end{itemize}
+	
+	\item \texttt{result\_AN},
+	\begin{itemize}
+		\item тип: \texttt{vector<int>},
+		\item описание: результирующий векотор, который будет передан для инициализации итоговой структуры,
+	\end{itemize}
+	
+	\item \texttt{result\_D}
+	\begin{itemize}
+		\item тип: \texttt{vector<int>},
+		\item описание: результирующий векотор, который будет передан для инициализации итоговой структуры,
+	\end{itemize}
+	
+	\item \texttt{len\_row\_1}
+	\begin{itemize}
+		\item тип: \texttt{int},
+		\item описание: количество значимых элементов в строке первой матрицы,
+	\end{itemize}
+	
+	\item \texttt{len\_row\_2}
+	\begin{itemize}
+		\item тип: \texttt{int},
+		\item описание: количество значимых элементов в строке второй матрицы,
+	\end{itemize}
+	
+	\item \texttt{iter\_row}
+	\begin{itemize}
+		\item тип: \texttt{int},
+		\item описание: строка результирующей матрицы,
+	\end{itemize}
+	
+	\item \texttt{ans}
+	\begin{itemize}
+		\item тип: \texttt{CompressedMatrix},
+		\item описание: итоговая структура,
+	\end{itemize}
+	
+	\item \texttt{last\_index}
+	\begin{itemize}
+		\item тип: \texttt{int},
+		\item описание: количество значимых элементов в строке для результирующей матрицы,
+	\end{itemize}
+\end{enumerate}
+
+\subsection*{Этапы работы алгоритма}
+\begin{enumerate}
+	\item цикл while (\texttt{iter\_row} < \texttt{(\_1->size - 1)}),
+	\begin{itemize}
+		\item \texttt{len\_row\_1 = \_1->D[iter\_row + 1] - \_1->D[iter\_row]},
+		\item 
+		\texttt{len\_row\_2 = \_2->D[iter\_row + 1] - \_2->D[iter\_row]},
+		\item цикл (i от 0 до \texttt{max(len\_row\_1, len\_row\_2)}),
+		\begin{itemize}
+			\item если \texttt{(i < len\_row\_1)} то прибавляем элемент из первой матрицы,
+			\item если \texttt{(i < len\_row\_2)} то прибавляем элемент из второй матрицы,
+		\end{itemize}
+ 		\item \texttt{iter\_row++},
+	\end{itemize}
+	
+	\item цикл (i от 0 до \texttt{\_1->size})
+	\begin{itemize}
+		\item добавляем в \texttt{result\_D} элемент со значением текущей длины массива \texttt{result\_AN},
+		\item цикл (el от 0 до \texttt{loc\_sum[i].size()}),
+		\begin{itemize}
+			\item если \texttt{loc\_sum[i][el]} не ноль, то обновляем \texttt{last\_ind} на el,
+		\end{itemize}
+		\item цикл (j от 0 до \texttt{last\_ind}),
+		\begin{itemize}
+			\item добавляем элемент из \texttt{loc\_sum} с координатами (i, j) в массив \texttt{result\_AN}, 
+		\end{itemize}
+	\end{itemize} 
+	
+	\item инициализируем \texttt{ans} используя полученные значения,
+	
+	\item функция возвращает ans,
+\end{enumerate}
+
+\section{Алгоритм упаковки матрицы по схеме Рейнбольдта-Местеньи}
+Для хранения матрицы используется 5 массивов \texttt{AN} -- массив с ненулевыми элементами, \texttt{NR} --массив в котором на $i$-ом месте стоит индекс в \texttt{AN} элемента являющегося следующим в строке для $i$-го из \texttt{AN}, \texttt{NC} --массив в котором на $i$-ом месте стоит индекс в \texttt{AN} элемента являющегося следующим для $i$-го в столбце, \texttt{JR} -- массив хранящий на $i$-ом месте индекс элемента из \texttt{AN}, являющегося первым в $i$-ой строке, \texttt{JС} -- массив хранящий на $i$-ом месте индекс элемента из \texttt{AN}, являющегося первым в $i$-ом столбце. Изначально массивы с вхождениями заполнены значениями $-1$. Обозначим \texttt{iter} -- текущее количество рассмотренных ненулевых элементов, \texttt{Cur\_R} -- индекс текущего элемента строки, изначально равного \texttt{JR[i]}, \texttt{Cur\_C} -- индекс текущего элемента столбца, изначально равного \texttt{JC[j]}. Алгоритм следующий.
+\subsection*{Этапы работы алгоритма}
+\begin{enumerate}
+	\item цикл перебирает элементы матрицы слева направо, сверху вниз, координаты [i, j],
+	\begin{itemize}
+		\item \texttt{NC[iter]} и \texttt{NR[iter]} присваиваем значение iter,
+		\item если JR[i] пустой, то присваиваем ему значение \texttt{iter}, тоже самое для JC[j],
+		\item цикл (пока \texttt{Cur\_R} < \texttt{iter}),
+		\begin{itemize}
+			\item \texttt{NR[cur\_R] = cur\_R + 1, cur\_R += 1},
+		\end{itemize}
+		\item закольцовывание ссылок на следующие элементы путём присваивания \texttt{NR[iter]} значения индекса первого элемента из строки,
+		
+		\item цикл (пока \texttt{Cur\_C} < \texttt{iter}),
+		\begin{itemize}
+			\item если элемент под индексом, \texttt{Cur\_C} ссылается на первый элемент в строке, то меняем его ссылку на элемент под индексом \texttt{iter} и меняем текущий присваиваем \texttt{Cur\_C} значение \texttt{iter},
+		    \item иначе, если ссылка на следующий элемент после элемента индексом \texttt{Cur\_C} не совпадает с индексом \texttt{iter}, то меняем индексы переходя к следующему элементу,
+			\end{itemize}
+		\item закольцовывание ссылок на следующие элементы путём присваивания \texttt{NC[iter]} значения индекса первого элемента из столбца,
+	\end{itemize}
+\end{enumerate}
+
+\section{Алгоритм распаковки матрицы из КРМ}
+Для распаковки матрицы используются две дополнительные функции \texttt{get\_IA} и \texttt{get\_JA}. Эти функции принимают на вход сжатую матрицу и возвращают массив с номерами строк в которых расположены элементы и номерами столбцов соответственно. Изначально результирующий массив \texttt{IA} инициализируется длинной \texttt{len\_AN} и заполняется значениями $-1$. 
+\subsection*{Этапы работы алгоритма}
+\begin{enumerate}
+	\item цикл перебирает элементы массива \texttt{AN} по индексам $i$,
+	\begin{itemize}
+		\item если это первый элемент строки, то присваиваем соответствующему значению в \texttt{IA} номер строки,
+		\item иначе, присваиваем соответствующему значению в \texttt{IA} и всем остальным полученным переходом по массиву \texttt{NC} значение номера строки,
+	\end{itemize}
+\end{enumerate}
+
+Полностью аналогичный алгоритм для функции \texttt{get\_JA}.
+Для получения распакованной матрицы, применяем обе эти функции и получаем словарь с координатами ненулевых элементов, значения которого координатно присваиваем элементам матрицы.
+
+\section{Алгоритм сложения матриц в КРМ}
+\subsection*{Этапы работы алгоритма}
+\begin{enumerate}
+	\item проверка на совместимость матриц по размерам,
+	
+	\item получение массивов IA и JA,
+	
+	\item создание словарь типа \texttt{map<pair<int, int>, int>}, который хранит значение элементов новой матрицы по координатам,
+	\item цикл по элементам первой матрицы,
+	\begin{itemize}
+		\item если элемент с такими координатами уже есть в словаре, то прибавляем значение этого элемента соответствующему элементу из словаря,
+		\item иначе, создается элемент в словаре со значением элемента из матрицы,
+	\end{itemize}
+	
+	\item аналогичный цикл для второй матрицы,
+	
+	\item проверка на хранение нулей,
+	
+	\item упаковка словаря в КРМ (аналогично упаковке матрицы см. 2.6),
+\end{enumerate}
+
+\section{Алгоритм умножения матриц в КРМ}
+\subsection*{Этапы работы алгоритма}
+\begin{enumerate}
+	\item проверка на совместимость матриц по размерам,
+	
+	\item получение массивов IA и JA,
+	
+	\item создание словарей с координатами элементов \texttt{coords\_1} и \texttt{coords\_2},
+	
+	\item определение размера результирующей матрицы,
+	
+	\item перебор слева направо, сверху  вниз, всех координат новой матрицы,
+	\begin{itemize}
+		\item цикл (k от 0 до (количество столбцов новой матрицы)), 
+		\begin{itemize}
+			\item если есть ключ $(i, k)$  в перовом словаре и есть ключ $(k, j)$ во втором словаре, то в новый словарь заносится их произведение,
+		\end{itemize}
+		\item инициализация сжатой матрицы по полученному словарю, 
+	\end{itemize}
+\end{enumerate}
+
+
+\clearpage

@@ -1,0 +1,317 @@
+\chapter{Конструкторская часть}
+
+\section{Структура хранения длинных чисел} 
+Длинное число в программе представляется в виде структуры. Структура \texttt{Number\_in\_fa\-ctors} описывает число в системе счисления основанной на множителях. Она включает в себя следующие поля:
+
+\begin{enumerate}
+	\item \texttt{map<int, int> number} -- хранит в себе все множители числа и их степени,
+	\item \texttt{int negative} -- хранит знак числа,
+	\item \texttt{bool empty} -- если число равно нулю, то переменная истинна, в обратном случае она ложна. 
+\end{enumerate}
+
+Для перевода числа из десятичной системы в систему множителей реализован метод \texttt{convert\_to\_factors} структуры \texttt{Number\_in\_factors}, которая на вход получает строку \texttt{inp} И работает по следующему алгоритму.
+
+\section{Алгоритм преобразования числа в систему множителей}
+Для преобразования числа, представленного в виде строки, в систему множителей используется функция \texttt{convert\_to\_factors}, которая на вход получает строку \texttt{inp}. Алгоритм, реализованный в этой функции, состоит из следующих шагов:
+
+\subsection*{Поля и начальная настройка}
+\begin{enumerate}
+	\item \texttt{num\_10}
+	\begin{itemize}
+		\item тип: \texttt{unsigned long long},
+		\item описание: число, полученное из строки в десятичной системе счисления,
+		\item начальное значение: \texttt{0}.
+	\end{itemize}
+	
+	\item \texttt{digit}
+	\begin{itemize}
+		\item тип: \texttt{int},
+		\item описание: число соответствующее разряду числа в десятичной системе,
+		\item начальное значение: \texttt{inp.size() - 1}.
+	\end{itemize}
+	
+	\item \texttt{empty}
+	\begin{itemize}
+		\item тип: \texttt{bool},
+		\item описание: флаг для обозначения нулевого числа,
+		\item начальное значение: \texttt{1}.
+	\end{itemize}
+	
+	\item \texttt{number}
+	\begin{itemize}
+		\item тип: \texttt{map<int, int>},
+		\item описание: хранилище степени каждого простого множителя,
+		\item начальное значение: {1, 1}.
+	\end{itemize}
+\end{enumerate}
+
+\subsection*{Этапы работы алгоритма}
+\begin{enumerate}
+	\item \textbf{Преобразование строки в десятичное число (\texttt{num\_10})}:
+	\begin{itemize}
+		\item для каждой цифры строки \texttt{inp} выполняется:
+		\begin{itemize}
+			\item если текущий символ \texttt{'-'}, проверяем флаг отрицательности. Если отрицательность уже установлена, выводим сообщение об ошибке,
+			\item если текущий символ \texttt{'0'}, пропускаем его и уменьшаем \texttt{digit},
+			\item в остальных случаях преобразуем символ в число, умножаем его на $10^{digit}$, прибавляем к \texttt{num\_10} и уменьшаем \texttt{digit}.
+		\end{itemize}
+	\end{itemize}
+	
+	\item \textbf{Обработка чисел, равных нулю:}
+	\begin{itemize}
+		\item если \texttt{num\_10 == 0}, устанавливаем \texttt{empty = 1} и очищаем \texttt{number},
+		\item завершаем работу функции.
+	\end{itemize}
+	
+	\item \textbf{Разложение числа на простые множители:}
+	\begin{itemize}
+		\item используем вектор \texttt{divs}, содержащий список простых чисел, полученный в результате работы функции \texttt{FIND\_DIVS}, находящей все простые числа до числа до $2^{22}$, по алгоритму \texttt{"решето Эратосфена"},
+		\item для каждого простого числа в \texttt{divs}:
+		\begin{itemize}
+			\item пока \texttt{num\_10 \% divs[loc\_ind] == 0}, увеличиваем степень этого множителя в \texttt{number} и делим \texttt{num\_10}.
+		\end{itemize}
+		\item если число не разложено полностью, используем перебор оставшихся чисел.
+	\end{itemize}
+	
+	\item \textbf{Обработка ошибок:}
+	\begin{itemize}
+		\item если \texttt{loc\_ind >= divs.size()}, выводим сообщение о том, что искомые делители очень большие(больше, чем $2^{22}$) и их вычисление может занять много времени и начинаем перебор оставшихся делителей,
+		\item если \texttt{num\_10} == 1, то заканчиваем алгоритм.
+	\end{itemize}
+\end{enumerate}
+
+\section{Алгоритм сложения/вычитания чисел в системе множителей}
+Для сложения чисел, представленных в виде системы множителей, используется перегрузка оператора \texttt{+}. Функция на вход принимает объект \texttt{\_2} типа \texttt{Number\_in\_factors}, представляющий второе слагаемое. Алгоритм, реализованный в функции, включает следующие шаги:
+
+\subsection*{Поля и начальная настройка}
+\begin{enumerate}
+	\item \texttt{common\_factors}
+	\begin{itemize}
+		\item тип: \texttt{Number\_in\_factors},
+		\item описание: хранит общие множители двух чисел,
+		\item начальное значение: единичный объект \texttt{Number\_in\_factors}.
+	\end{itemize}
+	
+	\item \texttt{small\_sum\_1, small\_sum\_2}
+	\begin{itemize}
+		\item тип: \texttt{long long},
+		\item описание: значения чисел в десятичной системе без общих множителей,
+		\item начальное значение: 0 для пустых чисел, $\pm1$ для ненулевых (с учётом знака).
+	\end{itemize}
+	
+	\item \texttt{small\_sum}
+	\begin{itemize}
+		\item тип: \texttt{Number\_in\_factors},
+		\item описание: итоговая сумма чисел в виде множителей,
+		\item начальное значение: единичный объект \texttt{Number\_in\_factors}.
+	\end{itemize}
+\end{enumerate}
+
+\subsection*{Этапы работы алгоритма}
+\begin{enumerate}
+	\item \textbf{Поиск общих множителей и преобразование чисел в десятичные значения:}
+	\begin{itemize}
+		\item для каждого множителя второго числа (\texttt{\_2.number}):
+		\begin{itemize}
+			\item если множитель является общим для чисел:
+			\begin{itemize}
+				\item добавляем его минимальную степень в \texttt{common\_factors}.
+				\item остаток степени добавляем к \texttt{small\_sum\_1} или \texttt{small\_sum\_2}, в зависимости от числа, в котором этот остаток присутствует.
+			\end{itemize}
+			\item если множитель отсутствует в первом числе:
+			\begin{itemize}
+				\item умножаем \texttt{small\_sum\_2} на значение множителя в его степени.
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+	
+	\item \textbf{обработка уникальных множителей первого числа:}
+	\begin{itemize}
+		\item для каждого множителя первого числа (\texttt{this->number}), который отсутствует во втором числе:
+		\begin{itemize}
+			\item умножаем \texttt{small\_sum\_1} на значение множителя в его степени.
+		\end{itemize}
+	\end{itemize}
+	
+	\item \textbf{сумма промежуточных значений и преобразование результата в систему множителей:}
+	\begin{itemize}
+		\item вычисляем сумму \texttt{small\_sum\_1 + small\_sum\_2},
+		\item если сумма равна 0, устанавливаем флаг \texttt{empty} в \texttt{small\_sum} и функция возвращает \texttt{small\_sum},
+		\item если сумма отрицательная, устанавливаем \texttt{negative = -1},
+		\item преобразуем абсолютное значение суммы в систему множителей, используя метод \texttt{convert\_to\_factors}.
+	\end{itemize}
+	
+	\item \textbf{возврат результата:}
+	\begin{itemize}
+		\item возвращаем произведение \texttt{common\_factors} и \texttt{small\_sum}.
+	\end{itemize}
+\end{enumerate}
+
+Алгоритм находящий разность чисел так же реализован в методе, описывающем поведение переопределённого оператора \texttt{'-'}. И отличается от алгоритма суммы, только тем, что на каждом шаге ищется разность, а на последнем шаге алгоритма, перед применением метода \texttt{convert\_to\_factors}, определяем модуль разности чисел \texttt{small\_sum\_1} и \texttt{small\_sum\_2}, и передаём его в метод \texttt{convert\_to\_factors} присваивая полю \texttt{negative} новой структуры значение соответствующее знаку разности чисел \texttt{small\_sum\_1} и \texttt{small\_sum\_2}.
+
+\section{Алгоритм умножения чисел в системе множителей}
+Для умножения чисел, представленных в виде системы множителей, используется перегрузка оператора \texttt{*}. Функция на вход принимает объект \texttt{\_2} типа \texttt{Number\_in\_factors}, представляющий второй множитель. Алгоритм, реализованный в функции, включает следующие шаги:
+
+\subsection*{Поля и начальная настройка}
+\begin{enumerate}
+	\item \texttt{res}
+	\begin{itemize}
+		\item тип: \texttt{Number\_in\_factors},
+		\item описание: хранит значение произведения двух чисел,
+		\item начальное значение полей:
+		\begin{itemize}
+			\item \texttt{negative = this->negative * \_2.negative},
+			\item \texttt{number = this->number}
+			\item \texttt{empty = 0}
+		\end{itemize}
+	\end{itemize}
+\end{enumerate}
+
+\subsection*{Этапы работы алгоритма}
+\begin{enumerate}
+	\item \textbf{Поиск всех множителей обоих чисел:}
+	\begin{itemize}
+		\item для каждого множителя второго числа (\texttt{\_2.number}):
+		\begin{itemize}
+			\item если такого множителя ещё нет в \texttt{res.number}, то добавляем его,
+			\item иначе степень этого множителя в числе \texttt{\_2} прибавляем к значению \texttt{res.number[множитель]} множитель отсутствует в первом числе.
+		\end{itemize}
+	\end{itemize}
+	
+	\item \textbf{Проверка умножения на ноль:}
+	\begin{itemize}
+		\item если значение одного из флагов \texttt{this->empty} или \texttt{\_2.empty} равно \texttt{true}:
+		\begin{itemize}
+			\item присваиваем флагу \texttt{res.empty} значение true и чистим словарь \texttt{res.number}.
+		\end{itemize}
+	\end{itemize}
+\end{enumerate}
+
+\section{Алгоритм получения целой части и остатка при делении чисел в системе множителей} 
+
+Для данной задачи, реализована функция \texttt{div}. Она принимает на вход три аргумента: указатели на объекты \texttt{Number\_in\_factors} (\texttt{\_1} и \texttt{\_2}) и строку \texttt{mode}, которая определяет, будет ли выполнено целочисленное деление или операция взятия остатка от деления. Алгоритм, реализованный в функции, включает следующие шаги:
+
+\subsection*{Поля и начальная настройка}
+\begin{enumerate}
+	\item \texttt{sign}
+	\begin{itemize}
+		\item тип: \texttt{int},
+		\item описание: Переменная для хранения знака результата операции деления, вычисляется как произведение знаков \texttt{\_1.negative} и \texttt{\_2.negative}.
+	\end{itemize}
+	
+	\item \texttt{frac}
+	\begin{itemize}
+		\item тип: \texttt{vector<unsigned long long>},
+		\item описание: вектор, хранящий числовые значения,
+		\item начальное значение: результат функции \texttt{cancellation}, которая возвращает два максимально сокращённых(без общих делителей) числа.
+	\end{itemize}
+	
+	\item \texttt{res}
+	\begin{itemize}
+		\item тип: \texttt{Number\_in\_factors},
+		\item описание: результат деления двух чисел в системе множителей, представленный также в виде системы множителей,
+		\item начальное значение: единичный объект типа \texttt{Number\_in\_factors}.
+	\end{itemize}
+	
+	\item \texttt{a}
+	\begin{itemize}
+		\item тип: \texttt{string},
+		\item описание: строка, которая будет содержать строковое представление числа, полученного в результате деления или операции взятия остатка,
+		\item начальное значение: пустая строка.
+	\end{itemize}
+\end{enumerate}
+
+\subsection*{Этапы работы алгоритма}
+\begin{enumerate}
+	\item \textbf{Проверка на пустое число:}
+	\begin{itemize}
+		\item проверяется, является ли второе число (\texttt{\_2}) пустым. Если да, то результат устанавливается как пустое число, и алгоритм выводит ошибку деления.
+	\end{itemize}
+	
+	\item \textbf{Приведение чисел к простым множителям:}
+	\begin{itemize}
+		\item используется функция \texttt{cancellation}, чтобы преобразовать оба числа (\texttt{\_1} и \texttt{\_2}), сохраняем их в векторе \texttt{frac},
+		\item вектор \texttt{frac} после выполнения функции \texttt{cancellation} содержит два числа: числитель и знаменатель в системе множителей.
+	\end{itemize}
+	
+	\item \textbf{Определение операции (деление или остаток):}
+	\begin{itemize}
+		\item если режим \texttt{mode} равен \texttt{"div"}, выполняется целочисленное деление числителя на знаменатель,
+		\item если режим \texttt{mode} равен \texttt{"mod"}, выполняется взятие остатка от деления числителя на знаменатель.
+	\end{itemize}
+	
+	\item \textbf{Конвертация результата в систему множителей:}
+	\begin{itemize}
+		\item результат операции деления или взятия остатка (с учетом знака) преобразуется в строку и передается в метод \texttt{convert\_to\_factors} для преобразования в систему множителей.
+	\end{itemize}
+	
+	\item \textbf{Возврат результата:}
+	\begin{itemize}
+		\item результат операции деления или взятия остатка в виде системы множителей возвращается из функции.
+	\end{itemize}
+\end{enumerate}
+
+\section{Алгоритм сравнения чисел в системе множителей}
+
+Для данной задачи реализована функция \texttt{compare}, которая принимает два аргумента: объекты \texttt{Number\_in\_factors} (\texttt{\_1} и \texttt{\_2}) и возвращает результат сравнения этих чисел. Алгоритм, реализованный в функции, включает следующие шаги:
+
+\subsection*{Поля и начальная настройка}
+\begin{enumerate}
+	\item \texttt{res}
+	\begin{itemize}
+		\item тип: \texttt{vector<Number\_in\_factors>},
+		\item описание: вектор, хранящий два объекта типа \texttt{Number\_in\_factors}, который используется для хранения промежуточных результатов при сравнении чисел,
+		\item начальное значение: пустой вектор из двух объектов типа \texttt{Number\_in\_factors}.
+	\end{itemize}
+	
+	\item \texttt{range}
+	\begin{itemize}
+		\item тип: \texttt{int},
+		\item описание: переменная, используемая для хранения разницы между степенями одинаковых простых множителей двух чисел.
+		\item начальное значение: 0.
+	\end{itemize}
+	
+	\item \texttt{lg\_1, lg\_2}
+	\begin{itemize}
+		\item тип: \texttt{unsigned long},
+		\item описание: переменные для хранения логарифмических значений чисел \texttt{\_1} и \texttt{\_2}, которые используются для более точного сравнения чисел с большими значениями,
+		\item начальное значение: 0,
+	\end{itemize}
+\end{enumerate}
+
+\subsection*{Этапы работы алгоритма}
+\begin{enumerate}
+	\item \textbf{Проверка на пустое число:}
+	\begin{itemize}
+		\item проверяется, является ли одно из чисел пустым. Если одно из чисел пустое (\texttt{\_2.empty == 1}), то алгоритм сразу возвращает \texttt{-1} или \texttt{1}, в зависимости от знака числа \texttt{\_1},
+		\item если оба числа пустые, то возвращается \texttt{0}, так как числа равны.
+	\end{itemize}
+	
+	\item \textbf{Проверка на знак чисел:}
+	\begin{itemize}
+		\item если одно число отрицательное, а другое положительное, то возвращается \texttt{-1} или \texttt{1} в зависимости от знаков чисел,
+		\item если оба числа имеют одинаковые знаки, продолжаем дальнейшее сравнение.
+	\end{itemize}
+	
+	\item \textbf{Сравнение чисел на основе их простых множителей:}
+	\begin{itemize}
+		\item для каждого простого множителя второго числа (\texttt{\_2.number}) проверяется его наличие в первом числе (\texttt{\_1.number}),
+		\begin{itemize}
+			\item если множитель отсутствует в первом числе, то его степень добавляется в результат во второй объект \texttt{res[1]},
+			\item если множитель присутствует в обоих числах, то вычисляется разница степеней. Если разница положительная, то множитель добавляется в первый объект \texttt{res[0]}, если отрицательная — в \texttt{res[1]}.
+		\end{itemize}
+		\item после обработки множителей второго числа, остаток множителей из первого числа (\texttt{\_1.number}) добавляется в первый объект \texttt{res[0]}.
+	\end{itemize}
+	
+	\item \textbf{Логарифмическое сравнение чисел:}
+	\begin{itemize}
+		\item для каждого множителя в \texttt{res[0].number} и \texttt{res[1].number} вычисляются их логарифмы по основанию \texttt{e},
+		\item логарифмы чисел \texttt{\_1} и \texttt{\_2} сравниваются между собой для того, чтобы определить, какое число больше.
+	\end{itemize}
+	
+	\item \textbf{Возврат результата:}
+	\begin{itemize}
+		\item если логарифм первого числа больше, возвращается \texttt{1}, если меньше, то \texttt{-1}, если они равны, то возвращается \texttt{0}.
+	\end{itemize}
+\end{enumerate}
+\clearpage

@@ -1,0 +1,99 @@
+\chapter{Конструкторская часть}
+
+\section{Структура узла АВЛ-дерева}
+Для хранения узлов АВЛ-дерева используется структура \texttt{Node}, которая содержит следующие поля:
+\begin{itemize}
+	\item \texttt{char content} --- массив типа \texttt{char}, хранящий содержимое узла;
+	\item \texttt{int height} --- высота поддерева с корнем в данном узле;
+	\item \texttt{Node* L, Node* R} --- указатели на левое и правое поддерево узла соответственно.
+\end{itemize}
+
+Конструктор структуры \texttt{Node}, не принимающий параметров, инициализирует поля следующим образом:
+\begin{itemize}
+	\item \texttt{content} присваивает \texttt{nullptr};
+	\item \texttt{height} инициализируется значением 1;
+	\item указатели \texttt{L} и \texttt{R} инициализируются \texttt{nullptr}.
+\end{itemize}
+
+Конструктор структуры \texttt{Node}, принимающий указатель на переменную \texttt{content} типа \texttt{char} в качестве параметра, инициализируя поля следующим образом:
+\begin{itemize}
+	\item \texttt{content} присваивается значение параметра;
+	\item \texttt{height} инициализируется значением 1;
+	\item указатели \texttt{L} и \texttt{R} инициализируются \texttt{new Node}.
+\end{itemize}
+
+Функция проверки баланса дерева \texttt{check\_balance(Node* a, Node* b)} принимающая на вход два аргумента и возвращающая разность между высотами этих деревьев.\par
+Функция \texttt{compare(char* str1, char* str2)} для сравнения объектов типа \texttt{char*}. Функция сравнивает строки с помощью функции \texttt{strcmp} библиотеки \texttt{cstring}, и возвращает соответствующие значения:
+\begin{itemize}
+	\item если \texttt{str1 > str2} --- возвращает 1;
+	\item если \texttt{str1 < str2} --- возвращает -1;
+	\item если \texttt{str1 == str2} --- возвращает 0.
+\end{itemize}
+
+
+\section{Функции для работы с высотой и балансом узлов}
+\begin{itemize}
+	\item \texttt{get\_рeight(Node* node)} --- возвращает высоту узла или 0, если узел отсутствует.
+	\item \texttt{fix\_height(Node* node)} --- обновляет высоту узла на основании высот его потомков.
+\end{itemize}
+
+\section{Вращения}
+\subsection*{Малое левое вращение}
+Функция \texttt{rot\_left(Node* a)} выполняет малое левое вращение узла \texttt{a}. Обозначим \texttt{root} --- корень дерева, \texttt{p} ссылка на правое поддерево корня. Алгоритм работы следующий:
+\begin{enumerate}
+	\item \texttt{root->R = p->L} заменяем правое поддерево корня с \texttt{p} на \texttt{p->L};
+	\item \texttt{p->L = root} ставим корень на место левого поддерева узла \texttt{p};
+	\item обновляется высота узла \texttt{root} с учетом новых потомков;
+	\item обновляется высота узла \texttt{p};
+	\item возвращается новый корень поддерева \texttt{root}.
+\end{enumerate}
+
+\subsection*{Малое правое вращение}
+Функция \texttt{rot\_left(Node* a)} выполняет малое правое вращение узла \texttt{a}. Обозначим \texttt{root} --- корень дерева, \texttt{p} ссылка на левое поддерево корня. Алгоритм работы следующий:
+\begin{enumerate}
+	\item \texttt{root->L = p->R} заменяем левое поддерево корня с \texttt{p} на \texttt{p->R};
+	\item \texttt{p->R = root} ставим корень на место правого поддерева узла \texttt{p};
+	\item обновляется высота узла \texttt{root} с учетом новых потомков;
+	\item обновляется высота узла \texttt{p};
+	\item возвращается новый корень поддерева \texttt{root}.
+\end{enumerate}
+
+\subsection*{Большие вращения}
+Для больших вращений была реализована функция \texttt{balance(Node* root)}, возвращающая указатель на переданный корень, работающая по следующему алгоритму:
+\begin{enumerate}
+	\item если \texttt{root->L $\neq$ nullptr} или \texttt{root->R $\neq$ nullptr} то вызываем функцию \newline \texttt{fix\_height(root)};
+	\item если высота правого поддерева больше высоты левого на два, то;1
+	\begin{itemize}
+		\item если \texttt{(root->R->L - root->R->R) > 0} значит совершаем малое правое вращение;
+		\item совершаем малое левое вращение; 
+		\item возвращает \texttt{root};
+	\end{itemize} 
+	\item если высота левого поддерева больше высоты правого на два;
+	\begin{itemize}
+		\item если \texttt{(root->R->L - root->R->R) > 0} значит совершаем малое правое вращение;
+		\item совершаем малое левое вращение; 
+		\item возвращает \texttt{root};
+	\end{itemize}
+	\item возвращает \texttt{root}.
+\end{enumerate}
+
+\section{Добавление элемента в дерево}
+Рекурсивная функция \texttt{add(char* content, Node* node)} выполняет добавление нового узла в соответствии со следующим алгоритмом:
+\begin{enumerate}
+	\item c начала происходит поиск узла для нового элемента;
+	\item если текущее значение \texttt{node->content} равно \texttt{nullptr} то присваиваем \texttt{node = new Node(content)};
+	\item после добавления вызывается \texttt{balance(node)} для поддержания сбалансированности.
+\end{enumerate}
+
+\section{Поиск элемента в дереве}
+Функция \texttt{search\_element(char* element, Node* node)} осуществляет поиск узла со значением \texttt{element}:
+\begin{itemize}
+	\item если значение текущего узла совпадает с \texttt{element}, поиск завершается;
+	\item если \texttt{element < node->content}, поиск продолжается в левом поддереве;
+	\item если \texttt{element > node->content}, поиск продолжается в правом поддереве.
+\end{itemize}
+В процессе поиска выводится путь до найденного узла или сообщение об отсутствии элемента.
+
+\section{Вывод дерева на экран}
+Функция \texttt{printTree(Node* root)} рекурсивно выводит дерево в консоль. 
+\clearpage

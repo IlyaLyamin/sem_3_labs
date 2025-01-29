@@ -1,0 +1,600 @@
+\ssr{Приложение А}
+	
+В данном приложении представлены результаты работы реализаций муравьиного алгоритма и его модернизации(алгоритм с элитными муравьями), в зависимости от параметров. \label{add}
+\begin{enumerate}
+	\item Граф из файла \texttt{\_5\_15.txt}(15 вершин) обычный алгоритм:
+	\begin{enumerate}
+		\item $a= 0.200001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange =  648.6$, $mediana =  650$, $best = 629$;
+			\item 500 days: $averange =  637.2$, $mediana =  641$, $best = 615$;
+			\item 800 days: $averange =  611$, $mediana =  616$, $best = 581$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange =  632.4$, $mediana =  633$, $best = 617$;
+			\item 500 days: $averange =  621.2$, $mediana =  621$, $best = 608$;
+			\item 800 days: $averange =  610.8$, $mediana =  607$, $best = 598$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange =  615.8$, $mediana =  614$, $best = 606$;
+			\item 500 days: $averange =  620.8$, $mediana =  618$, $best = 614$;
+			\item 800 days: $averange =  619.4$, $mediana =  625$, $best = 592$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange =  651.8$, $mediana =  645$, $best = 640$;
+			\item 500 days: $averange =  620$, $mediana =  624$, $best = 603$;
+			\item 800 days: $averange =  610.8$, $mediana =  608$, $best = 592$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange =  630.8$, $mediana =  628$, $best = 616$;
+			\item 500 days: $averange =  618.4$, $mediana =  620$, $best = 601$;
+			\item 800 days: $averange =  622.2$, $mediana =  619$, $best = 601$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange =  627$, $mediana =  633$, $best = 606$;
+			\item 500 days: $averange =  616.6$, $mediana =  618$, $best = 603$;
+			\item 800 days: $averange =  609.2$, $mediana =  608$, $best = 603$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange =  629.8$, $mediana =  629$, $best = 617$;
+			\item 500 days: $averange =  616$, $mediana =  616$, $best = 610$;
+			\item 800 days: $averange =  610$, $mediana =  608$, $best = 602$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange =  623.8$, $mediana =  628$, $best = 613$;
+			\item 500 days: $averange =  604.2$, $mediana =  608$, $best = 591$;
+			\item 800 days: $averange =  604$, $mediana =  605$, $best = 579$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange =  618.4$, $mediana =  619$, $best = 602$;
+			\item 500 days: $averange =  616$, $mediana =  627$, $best = 587$;
+			\item 800 days: $averange =  610.4$, $mediana =  609$, $best = 600$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange =  620$, $mediana =  620$, $best = 601$;
+			\item 500 days: $averange =  605.8$, $mediana =  609$, $best = 586$;
+			\item 800 days: $averange =  608.4$, $mediana =  609$, $best = 602$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange =  620.8$, $mediana =  621$, $best = 614$;
+			\item 500 days: $averange =  601.6$, $mediana =  606$, $best = 589$;
+			\item 800 days: $averange =  605$, $mediana =  603$, $best = 599$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange =  606.8$, $mediana =  609$, $best = 583$;
+			\item 500 days: $averange =  593.4$, $mediana =  597$, $best = 581$;
+			\item 800 days: $averange =  596$, $mediana =  601$, $best = 581$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange =  616$, $mediana =  614$, $best = 595$;
+			\item 500 days: $averange =  609.6$, $mediana =  610$, $best = 601$;
+			\item 800 days: $averange =  596.4$, $mediana =  592$, $best = 580$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange =  622.8$, $mediana =  621$, $best = 616$;
+			\item 500 days: $averange =  612.2$, $mediana =  615$, $best = 600$;
+			\item 800 days: $averange =  606.2$, $mediana =  605$, $best = 593$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange =  614.8$, $mediana =  613$, $best = 599$;
+			\item 500 days: $averange =  612$, $mediana =  609$, $best = 598$;
+			\item 800 days: $averange =  608.2$, $mediana =  604$, $best = 601$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange =  623.6$, $mediana =  623$, $best = 614$;
+			\item 500 days: $averange =  604.2$, $mediana =  597$, $best = 593$;
+			\item 800 days: $averange =  593.6$, $mediana =  596$, $best = 578$;
+		\end{itemize}
+	\end{enumerate}
+	\item Граф из файла \texttt{\_5\_15.txt}(15 вершин) алгоритм с элитными муравьями:
+	\begin{enumerate}
+		\item $a= 0.200001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 635.8$, $mediana = 633$, $best = 614$;
+			\item 500 days: $averange = 625$, $mediana = 619$, $best = 605$;
+			\item 800 days: $averange = 623.4$, $mediana = 618$, $best = 613$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 635.8$, $mediana = 636$, $best = 623$;
+			\item 500 days: $averange = 625.2$, $mediana = 630$, $best = 594$;
+			\item 800 days: $averange = 623.8$, $mediana = 620$, $best = 613$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 634.8$, $mediana = 644$, $best = 606$;
+			\item 500 days: $averange = 624.2$, $mediana = 629$, $best = 614$;
+			\item 800 days: $averange = 622.2$, $mediana = 623$, $best = 606$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 631.4$, $mediana = 632$, $best = 608$;
+			\item 500 days: $averange = 625.4$, $mediana = 626$, $best = 615$;
+			\item 800 days: $averange = 622$, $mediana = 628$, $best = 604$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 625.2$, $mediana = 623$, $best = 619$;
+			\item 500 days: $averange = 616.8$, $mediana = 619$, $best = 597$;
+			\item 800 days: $averange = 616.6$, $mediana = 616$, $best = 610$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 624.4$, $mediana = 627$, $best = 598$;
+			\item 500 days: $averange = 615$, $mediana = 613$, $best = 612$;
+			\item 800 days: $averange = 611.8$, $mediana = 607$, $best = 598$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 620$, $mediana = 621$, $best = 617$;
+			\item 500 days: $averange = 609$, $mediana = 610$, $best = 592$;
+			\item 800 days: $averange = 610.4$, $mediana = 612$, $best = 603$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 624$, $mediana = 622$, $best = 613$;
+			\item 500 days: $averange = 618.6$, $mediana = 620$, $best = 610$;
+			\item 800 days: $averange = 590.2$, $mediana = 594$, $best = 572$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 612.6$, $mediana = 615$, $best = 584$;
+			\item 500 days: $averange = 618.8$, $mediana = 616$, $best = 610$;
+			\item 800 days: $averange = 607.4$, $mediana = 609$, $best = 593$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 615.2$, $mediana = 624$, $best = 597$;
+			\item 500 days: $averange = 610.4$, $mediana = 608$, $best = 593$;
+			\item 800 days: $averange = 603.6$, $mediana = 608$, $best = 578$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 616.4$, $mediana = 619$, $best = 600$;
+			\item 500 days: $averange = 603.2$, $mediana = 608$, $best = 588$;
+			\item 800 days: $averange = 601.4$, $mediana = 600$, $best = 593$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 601$, $mediana = 603$, $best = 584$;
+			\item 500 days: $averange = 593.8$, $mediana = 600$, $best = 571$;
+			\item 800 days: $averange = 594.4$, $mediana = 597$, $best = 575$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 613.8$, $mediana = 615$, $best = 601$;
+			\item 500 days: $averange = 604.8$, $mediana = 602$, $best = 593$;
+			\item 800 days: $averange = 603.2$, $mediana = 604$, $best = 592$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 620.2$, $mediana = 621$, $best = 603$;
+			\item 500 days: $averange = 606$, $mediana = 605$, $best = 593$;
+			\item 800 days: $averange = 600$, $mediana = 600$, $best = 582$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 612.6$, $mediana = 613$, $best = 604$;
+			\item 500 days: $averange = 611.6$, $mediana = 618$, $best = 591$;
+			\item 800 days: $averange = 601.4$, $mediana = 607$, $best = 586$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 620$, $mediana = 615$, $best = 613$;
+			\item 500 days: $averange = 603.2$, $mediana = 598$, $best = 590$;
+			\item 800 days: $averange = 603.8$, $mediana = 607$, $best = 593$;
+		\end{itemize}
+	\end{enumerate}
+	\item Граф из файла \texttt{\_4\_10.txt}(10 вершин) обычный алгоритм(наименьший маршрут длины 305):
+	\begin{enumerate}
+		\item $a= 0.200001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 320$, $mediana = 322$, $best = 313$;
+			\item 500 days: $averange = 311.8$, $mediana = 312$, $best = 305$;
+			\item 800 days: $averange = 308.4$, $mediana = 306$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 318$, $mediana = 318$, $best = 315$;
+			\item 500 days: $averange = 308.6$, $mediana = 308$, $best = 305$;
+			\item 800 days: $averange = 310$, $mediana = 312$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 318.4$, $mediana = 321$, $best = 305$;
+			\item 500 days: $averange = 310.6$, $mediana = 308$, $best = 305$;
+			\item 800 days: $averange = 308.8$, $mediana = 308$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 313.2$, $mediana = 313$, $best = 306$;
+			\item 500 days: $averange = 311.6$, $mediana = 313$, $best = 306$;
+			\item 800 days: $averange = 314.4$, $mediana = 313$, $best = 308$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 309$, $mediana = 308$, $best = 306$;
+			\item 500 days: $averange = 307.2$, $mediana = 306$, $best = 305$;
+			\item 800 days: $averange = 306$, $mediana = 306$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 310.6$, $mediana = 313$, $best = 306$;
+			\item 500 days: $averange = 309.4$, $mediana = 308$, $best = 306$;
+			\item 800 days: $averange = 305.2$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 307.2$, $mediana = 306$, $best = 305$;
+			\item 500 days: $averange = 306.8$, $mediana = 306$, $best = 305$;
+			\item 800 days: $averange = 308.6$, $mediana = 308$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 310$, $mediana = 312$, $best = 305$;
+			\item 500 days: $averange = 309$, $mediana = 308$, $best = 305$;
+			\item 800 days: $averange = 305.4$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 312.2$, $mediana = 313$, $best = 308$;
+			\item 500 days: $averange = 310.2$, $mediana = 312$, $best = 305$;
+			\item 800 days: $averange = 305.8$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 308$, $mediana = 306$, $best = 305$;
+			\item 500 days: $averange = 307.6$, $mediana = 306$, $best = 305$;
+			\item 800 days: $averange = 305.2$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 310.6$, $mediana = 313$, $best = 305$;
+			\item 500 days: $averange = 305.8$, $mediana = 305$, $best = 305$;
+			\item 800 days: $averange = 305.6$, $mediana = 306$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 307.8$, $mediana = 305$, $best = 305$;
+			\item 500 days: $averange = 305.2$, $mediana = 305$, $best = 305$;
+			\item 800 days: $averange = 305$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 308.6$, $mediana = 308$, $best = 305$;
+			\item 500 days: $averange = 307.2$, $mediana = 305$, $best = 305$;
+			\item 800 days: $averange = 306.4$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 308.8$, $mediana = 308$, $best = 305$;
+			\item 500 days: $averange = 307$, $mediana = 306$, $best = 305$;
+			\item 800 days: $averange = 305$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 311.2$, $mediana = 313$, $best = 306$;
+			\item 500 days: $averange = 305.8$, $mediana = 305$, $best = 305$;
+			\item 800 days: $averange = 307.2$, $mediana = 306$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 311.4$, $mediana = 312$, $best = 308$;
+			\item 500 days: $averange = 307$, $mediana = 306$, $best = 305$;
+			\item 800 days: $averange = 305.6$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+	\end{enumerate}
+	\item Граф из файла \texttt{\_4\_10.txt}(10 вершин) алгоритм с элитными муравьями:
+	\begin{enumerate}
+		\item $a= 0.200001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 315.4$, $mediana = 318$, $best = 306$;
+			\item 500 days: $averange = 314.4$, $mediana = 316$, $best = 306$;
+			\item 800 days: $averange = 311.2$, $mediana = 312$, $best = 306$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 313.8$, $mediana = 316$, $best = 306$;
+			\item 500 days: $averange = 309$, $mediana = 308$, $best = 305$;
+			\item 800 days: $averange = 306.6$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 314.6$, $mediana = 313$, $best = 308$;
+			\item 500 days: $averange = 307.8$, $mediana = 308$, $best = 305$;
+			\item 800 days: $averange = 312$, $mediana = 313$, $best = 306$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 319.8$, $mediana = 320$, $best = 305$;
+			\item 500 days: $averange = 311.8$, $mediana = 313$, $best = 305$;
+			\item 800 days: $averange = 314.4$, $mediana = 312$, $best = 312$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 315.6$, $mediana = 318$, $best = 305$;
+			\item 500 days: $averange = 307.4$, $mediana = 306$, $best = 305$;
+			\item 800 days: $averange = 306.8$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 310$, $mediana = 308$, $best = 305$;
+			\item 500 days: $averange = 306.6$, $mediana = 305$, $best = 305$;
+			\item 800 days: $averange = 309$, $mediana = 308$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 309.4$, $mediana = 312$, $best = 305$;
+			\item 500 days: $averange = 306.2$, $mediana = 305$, $best = 305$;
+			\item 800 days: $averange = 307.6$, $mediana = 306$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 309.4$, $mediana = 308$, $best = 305$;
+			\item 500 days: $averange = 308.4$, $mediana = 308$, $best = 305$;
+			\item 800 days: $averange = 305.8$, $mediana = 306$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 313.4$, $mediana = 312$, $best = 306$;
+			\item 500 days: $averange = 307.8$, $mediana = 308$, $best = 305$;
+			\item 800 days: $averange = 308.6$, $mediana = 308$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 310.4$, $mediana = 312$, $best = 305$;
+			\item 500 days: $averange = 310.2$, $mediana = 312$, $best = 305$;
+			\item 800 days: $averange = 305.6$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 309.6$, $mediana = 308$, $best = 305$;
+			\item 500 days: $averange = 306.4$, $mediana = 305$, $best = 305$;
+			\item 800 days: $averange = 306.8$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 306.6$, $mediana = 306$, $best = 305$;
+			\item 500 days: $averange = 306.6$, $mediana = 305$, $best = 305$;
+			\item 800 days: $averange = 305.2$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 309.2$, $mediana = 306$, $best = 306$;
+			\item 500 days: $averange = 306.6$, $mediana = 305$, $best = 305$;
+			\item 800 days: $averange = 306.2$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 309.2$, $mediana = 308$, $best = 305$;
+			\item 500 days: $averange = 309.2$, $mediana = 308$, $best = 305$;
+			\item 800 days: $averange = 308.2$, $mediana = 306$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 306.4$, $mediana = 306$, $best = 305$;
+			\item 500 days: $averange = 307.2$, $mediana = 306$, $best = 305$;
+			\item 800 days: $averange = 305.2$, $mediana = 305$, $best = 305$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 309.4$, $mediana = 308$, $best = 305$;
+			\item 500 days: $averange = 305.8$, $mediana = 305$, $best = 305$;
+			\item 800 days: $averange = 307.6$, $mediana = 306$, $best = 305$;
+		\end{itemize}
+	\end{enumerate}
+	\item Граф из файла \texttt{\_2\_10.txt}(10 вершин) обычный алгоритм(длина кратчайшего маршрута равна 275):
+	\begin{enumerate}
+		\item $a= 0.200001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 284$, $mediana = 280$, $best = 275$;
+			\item 500 days: $averange = 278$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 280$, $mediana = 280$, $best = 280$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 285$, $mediana = 280$, $best = 280$;
+			\item 500 days: $averange = 283$, $mediana = 285$, $best = 275$;
+			\item 800 days: $averange = 277$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 285$, $mediana = 285$, $best = 280$;
+			\item 500 days: $averange = 281$, $mediana = 280$, $best = 275$;
+			\item 800 days: $averange = 277$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 292$, $mediana = 295$, $best = 280$;
+			\item 500 days: $averange = 282$, $mediana = 280$, $best = 275$;
+			\item 800 days: $averange = 283$, $mediana = 285$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 280$, $mediana = 280$, $best = 275$;
+			\item 500 days: $averange = 281$, $mediana = 280$, $best = 275$;
+			\item 800 days: $averange = 279$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 278$, $mediana = 280$, $best = 275$;
+			\item 500 days: $averange = 278$, $mediana = 280$, $best = 275$;
+			\item 800 days: $averange = 279$, $mediana = 280$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 284$, $mediana = 285$, $best = 275$;
+			\item 500 days: $averange = 278$, $mediana = 280$, $best = 275$;
+			\item 800 days: $averange = 280$, $mediana = 280$, $best = 280$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 283$, $mediana = 285$, $best = 275$;
+			\item 500 days: $averange = 279$, $mediana = 280$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 281$, $mediana = 280$, $best = 275$;
+			\item 500 days: $averange = 275$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 275$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 281$, $mediana = 285$, $best = 275$;
+			\item 500 days: $averange = 277$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 279$, $mediana = 275$, $best = 275$;
+			\item 500 days: $averange = 276$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 277$, $mediana = 275$, $best = 275$;
+			\item 500 days: $averange = 276$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 275$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 279$, $mediana = 275$, $best = 275$;
+			\item 500 days: $averange = 277$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 277$, $mediana = 275$, $best = 275$;
+			\item 500 days: $averange = 277$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 275$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 279$, $mediana = 280$, $best = 275$;
+			\item 500 days: $averange = 276$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 278$, $mediana = 280$, $best = 275$;
+			\item 500 days: $averange = 276$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 275$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+	\end{enumerate}
+	\item \texttt{\_2\_10.txt}(10 вершин) алгоритм с элитными муравьями(длина кратчайшего маршрута равна 275):
+	\begin{enumerate}
+		\item $a= 0.200001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 285$, $mediana = 285$, $best = 280$;
+			\item 500 days: $averange = 284$, $mediana = 285$, $best = 280$;
+			\item 800 days: $averange = 279$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 288$, $mediana = 285$, $best = 280$;
+			\item 500 days: $averange = 282$, $mediana = 280$, $best = 280$;
+			\item 800 days: $averange = 280$, $mediana = 280$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 283$, $mediana = 280$, $best = 275$;
+			\item 500 days: $averange = 280$, $mediana = 280$, $best = 275$;
+			\item 800 days: $averange = 279$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.200001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 292$, $mediana = 295$, $best = 285$;
+			\item 500 days: $averange = 277$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 288$, $mediana = 290$, $best = 280$;
+			\item 500 days: $averange = 281$, $mediana = 280$, $best = 280$;
+			\item 800 days: $averange = 279$, $mediana = 280$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 279$, $mediana = 280$, $best = 275$;
+			\item 500 days: $averange = 277$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 278$, $mediana = 280$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 280$, $mediana = 280$, $best = 275$;
+			\item 500 days: $averange = 277$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 277$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.450001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 276$, $mediana = 275$, $best = 275$;
+			\item 500 days: $averange = 277$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 275$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 280$, $mediana = 280$, $best = 275$;
+			\item 500 days: $averange = 280$, $mediana = 280$, $best = 275$;
+			\item 800 days: $averange = 279$, $mediana = 280$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 280$, $mediana = 275$, $best = 275$;
+			\item 500 days: $averange = 279$, $mediana = 280$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 278$, $mediana = 280$, $best = 275$;
+			\item 500 days: $averange = 278$, $mediana = 280$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.700001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 277$, $mediana = 275$, $best = 275$;
+			\item 500 days: $averange = 275$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.200001$:
+		\begin{itemize}
+			\item 200 days: $averange = 282$, $mediana = 285$, $best = 275$;
+			\item 500 days: $averange = 277$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.450001$:
+		\begin{itemize}
+			\item 200 days: $averange = 278$, $mediana = 275$, $best = 275$;
+			\item 500 days: $averange = 276$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.700001$:
+		\begin{itemize}
+			\item 200 days: $averange = 279$, $mediana = 280$, $best = 275$;
+			\item 500 days: $averange = 275$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+		\item $a= 0.950001, q= 0.950001$:
+		\begin{itemize}
+			\item 200 days: $averange = 281$, $mediana = 280$, $best = 280$;
+			\item 500 days: $averange = 277$, $mediana = 275$, $best = 275$;
+			\item 800 days: $averange = 276$, $mediana = 275$, $best = 275$;
+		\end{itemize}
+	\end{enumerate}
+\end{enumerate}
+	

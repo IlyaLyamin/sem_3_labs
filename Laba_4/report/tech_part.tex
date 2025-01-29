@@ -1,0 +1,845 @@
+\chapter{Технологическая часть}
+
+\section{Выбор средств реализации}
+Для программной реализации алгоритма использовалась среда разработки Visual Studio 2022, язык программирования, на котором была выполнена реализации алгоритмов --- C++.
+Для компиляции кода использовался компилятор MSVC. Исследование проводилось на ноутбуке (64--разрядная операционная система, процессор x64, частота процессора 3.1~ГГц, модель процессора 12th Gen Intel(R) Core(TM) i5-12500H, оперативная память 16~ГБ)
+\section{Реализация алгоритмов}
+В листингах \ref{list1}, \ref{list2}, \ref{list3}, \ref{list4}, \ref{list5}, \ref{list6}, \ref{list7}, \ref{list8}, \ref{list9}представлена программная реализация описанных классов и функций.
+\begin{lstlisting}[label = list1, caption = Программная реализация вспомогательных структур]
+class Matrix {
+	public:
+	int rows;
+	int columns;
+	int un_zero = 0;
+	int** array;
+	
+	Matrix() : rows(0), columns(0), array(nullptr) {}
+	
+	Matrix(int size) {
+		this->rows = size;
+		this->columns = size;
+		array = new int* [size];
+		for (int i = 0; i < size; i++) {
+			array[i] = new int[size];
+			for (int j = 0; j < size; j++) {
+				array[i][j] = 0;
+			}
+		}
+	}
+	
+	Matrix(int rows, int columns) {
+		this->rows = rows;
+		this->columns = columns;
+		array = new int* [rows];
+		for (int i = 0; i < rows; i++) {
+			array[i] = new int[columns];
+			for (int j = 0; j < columns; j++) {
+				array[i][j] = 0;
+			}
+		}
+	}
+	
+	~Matrix() {
+		clear();
+	}
+	
+	void print() {
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				cout << setw(4) << array[i][j] << " ";
+			}
+			cout << "\n";
+		}
+		cout << "ROWS: " << rows << "\n";
+		cout << "COLUMNS: " << columns << "\n";
+		cout << "UN_ZERO: " << un_zero << "\n";
+	}
+	
+	Matrix& operator= (const Matrix& rhs) {
+		if (this == (&rhs)) {
+			cout << "slefassignment" << "\n";
+			return *this;
+		}
+		clear();
+		
+		this->un_zero = rhs.un_zero;
+		this->rows = rhs.rows;
+		this->columns = rhs.columns;
+		array = new int* [rows];
+		
+		for (int i = 0; i < rows; i++) {
+			array[i] = new int[columns];
+			for (int j = 0; j < columns; j++) {
+				array[i][j] = rhs.array[i][j];
+			}
+		}
+		return *this;
+	}
+	
+	void clear() {
+		if (array != nullptr) {
+			for (int i = 0; i < rows; i++) {
+				delete[] array[i];
+			}
+			delete[] array;
+			array = nullptr;
+		}
+	}
+};
+
+struct CompressedMatrix {
+	int* AN = nullptr;
+	int* D = nullptr;
+	int len_AN = 0;
+	int size = 0;
+	
+	CompressedMatrix() {}
+	
+	CompressedMatrix(int* AN, int* D, int len_AN, int size) {
+		this->AN = new int[len_AN];
+		for (int i = 0; i < len_AN; i++) {
+			this->AN[i] = AN[i];
+		}
+		this->D = new int[size];
+		for (int i = 0; i < size; i++) {
+			this->D[i] = D[i];
+		}
+		this->len_AN = len_AN;
+		this->size = size;
+	}
+	
+	~CompressedMatrix() {
+		clear();
+	}
+	
+	void print() {
+		cout << "AN: ";
+		for (int i = 0; i < len_AN; i++) {
+			cout << AN[i] << " ";
+		}
+		cout << endl << "D: ";
+		for (int i = 0; i < size; i++) {
+			cout << D[i] << " ";
+		}
+	}
+	
+	CompressedMatrix& operator= (const CompressedMatrix& rhs) {
+		if (this == (&rhs)) {
+			cout << "slefassignment" << "\n";
+			return *this;
+		}
+		clear();
+		
+		this->size = rhs.size;
+		this->len_AN = rhs.len_AN;
+		this->AN = new int[len_AN];
+		this->D = new int[size];
+		
+		for (int i = 0; i < len_AN; i++) {
+			AN[i] = rhs.AN[i];
+		}
+		for (int i = 0; i < size; i++) {
+			D[i] = rhs.D[i];
+		}
+		return *this;
+	}
+	
+	void clear() {
+		if (AN != nullptr) {
+			delete[] AN;
+			AN = nullptr;
+		}
+		if (D != nullptr) {
+			delete[] D;
+			D = nullptr;
+		}
+	}
+};
+
+class KRMCompressedMatrix {
+	public:
+	int* AN = nullptr;
+	int* NR = nullptr;
+	int* NC = nullptr;
+	int* JR = nullptr;
+	int* JC = nullptr;
+	int len_AN = 0;
+	int rows = 0;
+	int columns = 0;
+	
+	KRMCompressedMatrix() {}
+	
+	KRMCompressedMatrix(Matrix* mat) {
+		this->len_AN = mat->un_zero;
+		this->rows = mat->rows;
+		this->columns = mat->columns;
+		AN = new int[len_AN];
+		NR = new int[len_AN];
+		NC = new int[len_AN];
+		JR = new int[rows];
+		JC = new int[columns];
+		for (int i = 0; i < len_AN; i++) {
+			AN[i] = 0;
+			NR[i] = -1;
+			NC[i] = -1;
+		}
+		for (int i = 0; i < rows; i++) {
+			JR[i] = -1;
+		}
+		for (int i = 0; i < columns; i++) {
+			JC[i] = -1;
+		}
+		create_arrays(mat, AN, NR, NC, JR, JC);
+	}
+	
+	KRMCompressedMatrix(map<pair<int, int>, int>* coords, int rows, int columns) {
+		this->len_AN = (*coords).size();
+		this->rows = rows;
+		this->columns = columns;
+		
+		AN = new int[len_AN];
+		NR = new int[len_AN];
+		NC = new int[len_AN];
+		JR = new int[rows];
+		JC = new int[columns];
+		
+		for (int i = 0; i < len_AN; i++) {
+			AN[i] = 0;
+		}
+		for (int i = 0; i < rows; i++) {
+			JR[i] = -1;
+		}
+		for (int i = 0; i < columns; i++) {
+			JC[i] = -1;
+		}
+		
+		create_arrays(coords, AN, NR, NC, JR, JC, rows, columns);
+	}
+	
+	KRMCompressedMatrix(int len_AN, int rows, int columns, int*& AN, int*& NR, int*& NC, int*& JR, int*& JC) {
+		this->len_AN = len_AN;
+		this->rows = rows;
+		this->columns = columns;
+		this->AN = AN;
+		this->NR = NR;
+		this->NC = NC;
+		this->JR = JR;
+		this->JC = JC;
+	}
+	
+	~KRMCompressedMatrix() {
+		clear();
+	}
+	
+	void print() {
+		cout << "AN: ";
+		for (int i = 0; i < len_AN; i++) {
+			cout << setw(3) << AN[i] << " ";
+		}
+		
+		cout << endl << "NR: ";
+		for (int i = 0; i < len_AN; i++) {
+			cout << setw(3) << NR[i] << " ";
+		}
+		
+		cout << endl << "NC: ";
+		for (int i = 0; i < len_AN; i++) {
+			cout << setw(3) << NC[i] << " ";
+		}
+		
+		cout << endl << "JR: ";
+		for (int i = 0; i < rows; i++) {
+			cout << setw(3) << JR[i] << " ";
+		}
+		
+		cout << endl << "JC: ";
+		for (int i = 0; i < columns; i++) {
+			cout << setw(3) << JC[i] << " ";
+		}
+	}
+	
+	KRMCompressedMatrix& operator= (const KRMCompressedMatrix& rhs) {
+		if (this == (&rhs)) {
+			cout << "selfassignment" << "\n";
+			return *this;
+		}
+		clear();
+		
+		this->rows = rhs.rows;
+		this->columns = rhs.columns;
+		this->len_AN = rhs.len_AN;
+		this->AN = new int[len_AN];
+		this->NR = new int[len_AN];
+		this->NC = new int[len_AN];
+		this->JR = new int[rows];
+		this->JC = new int[columns];
+		
+		for (int i = 0; i < len_AN; i++) {
+			this->AN[i] = rhs.AN[i];
+			this->NR[i] = rhs.NR[i];
+			this->NC[i] = rhs.NC[i];
+		}
+		for (int i = 0; i < rows; i++) {
+			this->JR[i] = rhs.JR[i];
+		}
+		for (int i = 0; i < columns; i++) {
+			this->JC[i] = rhs.JC[i];
+		}
+		return *this;
+	}
+	
+	void clear() {
+		if (AN != nullptr) {
+			delete[] AN;
+			AN = nullptr;
+		}
+		if (NR != nullptr) {
+			delete[] NR;
+			NR = nullptr;
+		}
+		if (NC != nullptr) {
+			delete[] NC;
+			NC = nullptr;
+		}
+		if (JR != nullptr) {
+			delete[] JR;
+			JR = nullptr;
+		}
+		if (JC != nullptr) {
+			delete[] JC;
+			JC = nullptr;
+		}
+	}
+};
+\end{lstlisting}
+
+\begin{lstlisting}[label = list2, caption = Программная реализация вспомогательных функций]
+Matrix usual_addition(Matrix* _1, Matrix* _2) {
+	if ((_1->rows != _2->rows) or (_2->columns != _1->columns)) {
+		cout << "Uncampatable sizes in addition: \n";
+		exit(1);
+	}
+	Matrix ans(_1->rows, _1->columns);
+	for (int i = 0; i < (*_1).rows; i++) {
+		for (int j = 0; j < (*_2).rows; j++) {
+			ans.array[i][j] = _1->array[i][j] + _2->array[i][j];
+		}
+	}
+	return ans;
+}
+
+Matrix usual_multiplication(Matrix* array_l, Matrix* array_r) {
+	Matrix new_ar(array_l->rows, array_r->columns);
+	if (array_l->columns != array_r->rows) {
+		cout << "Uncampatable sizes in multiplication: \n";
+		exit(1);
+	}
+	
+	for (int i = 0; i < array_l->rows; i++) {
+		
+		for (int j = 0; j < array_r->columns; j++) {
+			for (int k = 0; k < array_l->columns; k++) {
+				new_ar.array[i][j] += (array_l->array[i][k] * array_r->array[k][j]);
+			}
+			if (new_ar.array[i][j] != 0) new_ar.un_zero += 1;
+		}
+	}
+	return new_ar;
+}
+
+int* parse(string str, int len, Matrix* mat) {
+	int col = 0;
+	for (char i : str)
+	if (i == ';') col++;
+	string* arr = new string[col];
+	int iter = 0;
+	for (char i : str) {
+		if (i == ';') {
+			iter++;
+			continue;
+		}
+		arr[iter] += i;
+	}
+	if (iter == len) {
+		int* ans = new int[iter];
+		for (int i = 0; i < iter; i++) {
+			ans[i] = str_int(arr[i]);
+			if (ans[i] != 0) mat->un_zero += 1;
+		}
+		delete[] arr;
+		return ans;
+	}
+	else {
+		cout << "There are not enough numbers for a matrix of this size";
+		exit(1);
+	}
+	
+	Matrix read_matrix(string filename) {
+		ifstream file(filename);
+		string data;
+		int rows = 0;
+		int r = 0;
+		int c = 0;
+		if (file.is_open())
+		{
+			if (getline(file, data)) {
+				if (data[0] == 'S') {
+					read_len(data, &r, &c);
+				}
+			}
+			Matrix matrix(r, c);
+			// start reading the matrix
+			while (getline(file, data)) {
+				matrix.array[rows] = parse(data, c, &matrix);//////
+				if (rows > r) {
+					cout << "There are too many strings\n";
+					exit(1);
+				}
+				rows++;
+			}
+			if (rows != r) {
+				cout << "Amount of strings is not enoght\n";
+				exit(1);
+			}
+			return matrix;
+		}
+		else {
+			cout << "File read error\n";
+			exit(1);
+		}
+	}
+	
+	void COMPARE(Matrix* _1, Matrix* _2) {
+		for (int i = 0; i < _1->rows; i++) {
+			for (int j = 0; j < _1->columns; j++) {
+				if (_1->array[i][j] != _2->array[i][j]) {
+					cout << "POSITOIN [" << i << "][" << j << "]: " << _1->array[i][j] << " != " << _2->array[i][j] << "\n";
+				}
+			}
+		}
+	}
+\end{lstlisting}
+
+\begin{lstlisting}[label = list3, caption = Программная реализация алгоритма упавковки по Дженнингсу]
+	void create_AN(int** matrix, int size, int* an_size, int** D, int** AN) {
+		vector<int> an_loc;
+		
+		int glob_ind = 0;
+		int last_ind = 0;
+		
+		for (int i = 0; i < size; i++) {
+			(*D)[i] = glob_ind;
+			last_ind = i;
+			for (int j = i; j < size; j++) {
+				if (matrix[i][j] != 0) last_ind = j;
+			}
+			for (int j = i; j < (last_ind + 1); j++) {
+				an_loc.push_back(matrix[i][j]);
+			}
+			glob_ind += (last_ind - i) + 1;
+		}
+		
+		(*an_size) = an_loc.size();
+		(*AN) = new int[(*an_size)];
+		for (int i = 0; i < (*an_size); i++) {
+			(*AN)[i] = an_loc[i];
+		}
+	}
+	
+	CompressedMatrix matrix_packagin(Matrix* mat) {
+		int AN_size = 0;
+		int* D = new int[(*mat).rows];
+		int* AN = nullptr;
+		
+		create_AN((*mat).array, (*mat).rows, &AN_size, &D, &AN);
+		
+		CompressedMatrix A(AN, D, AN_size, (*mat).rows);
+		delete[] AN;
+		delete[] D;
+		return A;
+	}
+\end{lstlisting}
+
+\begin{lstlisting}[label = list4, caption = Программная реализация алгоритма распаковки из схемы Дженнингса]
+Matrix matrix_unpackagin(CompressedMatrix* comp_mat) {
+	Matrix ans(comp_mat->size);
+	ans.un_zero = comp_mat->len_AN;
+	cout << endl;
+	
+	int row = -1;
+	int column = -1;
+	int ind_D = 0;
+	for (int i = 0; i < comp_mat->len_AN; i++) {
+		column++;
+		if (i == comp_mat->D[ind_D]) {
+			row++;
+			column = row;
+			ind_D++;
+		}
+		ans.array[row][column] = comp_mat->AN[i];
+		ans.array[column][row] = comp_mat->AN[i];
+	}
+	return ans;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[label = list5, caption = Программная реализация алгоритма сложения мартиц сажтаых по схеме Дженнингса]
+CompressedMatrix sum_pack_matrix(CompressedMatrix* _1, CompressedMatrix* _2) {
+	vector<int> *loc_sum = new vector<int>[_1->size];
+	vector<int> result_AN;
+	vector<int> result_D;
+	int len_row_1 = 0;
+	int len_row_2 = 0;
+	int iter_row = 0;
+	
+	while (iter_row < (_1->size - 1)) {//size==rows
+		len_row_1 = _1->D[iter_row + 1] - _1->D[iter_row];
+		len_row_2 = _2->D[iter_row + 1] - _2->D[iter_row];
+		for (int i = 0; i < max(len_row_1, len_row_2); i++) {
+			loc_sum[iter_row].push_back(0);
+			if (i < len_row_1) loc_sum[iter_row][loc_sum[iter_row].size() - 1] += _1->AN[_1->D[iter_row] + i];
+			if (i < len_row_2) loc_sum[iter_row][loc_sum[iter_row].size() - 1] += _2->AN[_2->D[iter_row] + i];
+		}
+		iter_row++;
+	}
+	loc_sum[iter_row].push_back(0);
+	loc_sum[iter_row][loc_sum[iter_row].size() - 1] += _1->AN[_1->D[iter_row]] + _2->AN[_2->D[iter_row]];
+	int last_ind = 1;
+	
+	for (int i = 0; i < _1->size; i++) {
+		result_D.push_back(result_AN.size());
+		for (int el = 0; el < loc_sum[i].size(); el++) {
+			if (loc_sum[i][el] != 0) last_ind = el;
+		}
+		for (int j = 0; j <= last_ind; j++) {
+			result_AN.push_back(loc_sum[i][j]);
+		}
+	}
+	
+	int* D = new int[_1->size];
+	int* AN = new int[result_AN.size()];
+	for (int i = 0; i < result_AN.size(); i++) {
+		AN[i] = result_AN[i];
+	}
+	for (int i = 0; i < _1->size; i++) {
+		D[i] = result_D[i];
+	}
+	
+	CompressedMatrix ans(AN, D, result_AN.size(), _1->size);
+	return ans;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[label = list6, caption = Программная реализация алгоритма упаковки матрицы по схеме Рейнбольдта-Местеньи]
+	int* get_IA(KRMCompressedMatrix* _1) {//rows numbers
+		int* IA = new int[_1->len_AN];
+		for (int i = 0; i < _1->len_AN; i++) {
+			IA[i] = -1;
+		}
+		int cur;
+		for (int i = 0; i < _1->len_AN; i++) {
+			if (IA[i] == -1) {
+				for (int r = 0; r < _1->rows; r++) {
+					if (i == _1->JR[r]) {
+						IA[i] = r;
+						cur = _1->NR[i];
+						while (cur != _1->JR[r]) {
+							IA[cur] = r;
+							cur = _1->NR[cur];
+							//if (cur >= _1->len_AN) cout << "294!!!!!!!!!!!!!!!!!\n";
+						}
+					}
+				}
+			}
+		}
+		return IA;
+	}
+	
+	int*& get_JA(KRMCompressedMatrix* _1) {// get columns numbers
+		int* JA = new int[_1->len_AN];
+		for (int i = 0; i < _1->len_AN; i++) {
+			JA[i] = -1;
+		}
+		int cur;
+		for (int i = 0; i < _1->len_AN; i++) {
+			if (JA[i] == -1) {
+				for (int c = 0; c < _1->columns; c++) {
+					if (i == _1->JC[c]) {
+						JA[i] = c;
+						cur = _1->NC[i];
+						while (cur != _1->JC[c]) {
+							JA[cur] = c;
+							cur = _1->NC[cur];
+							//if (cur >= _1->len_AN) cout
+						}
+					}
+				}
+			}
+		}
+		return JA;
+	}
+	
+	void create_arrays(Matrix* mat, int*& AN, int*& NR, int*& NC, int*& JR, int*& JC)
+	{
+		int R = mat->rows;
+		int C = mat->columns;
+		int LEN_AN = mat->un_zero;
+		int iter = -1;
+		int cur_R = 0;
+		int cur_C = 0;
+		int loc_iter = 0;
+		for (int i = 0; i < R; i++) {
+			for (int j = 0; j < C; j++) {
+				if (mat->array[i][j] != 0) {
+					iter++;
+					if (iter >= LEN_AN) {
+						exit(1);
+					}
+					AN[iter] = mat->array[i][j];
+					NR[iter] = iter;
+					NC[iter] = iter;
+					
+					if ((JR[i] == -1) or (JC[j] == -1)) {
+						if (JR[i] == -1) JR[i] = iter;
+						if (JC[j] == -1) JC[j] = iter;
+					}
+					//NR
+					cur_R = JR[i];
+					while (cur_R < iter) {
+						NR[cur_R] = cur_R + 1;
+						cur_R += 1;
+					}
+					NR[iter] = JR[i];
+					
+					//NC
+					cur_C = JC[j];
+					while (cur_C < iter) {
+						if (NC[cur_C] == JC[j]) {
+							NC[cur_C] = iter;
+							cur_C = iter;
+						}
+						else if (NC[cur_C] != iter) {
+							cur_C = NC[cur_C];
+						}
+						else {
+							NC[cur_C] = iter;
+							cur_C = NC[cur_C];//iter
+						}
+					}
+					NC[iter] = JC[j];
+				}
+			}
+		}
+	}
+	
+\end{lstlisting}
+
+\begin{lstlisting}[label = list7, caption = Программная реализация алгоритма распкаовки мартиц сажтаых по схеме Рейнбольдта-Местеньи]
+	Matrix unpacking_KRM(KRMCompressedMatrix* krm) {
+		int* IA = get_IA(krm);
+		int* JA = get_JA(krm);
+		
+		Matrix res(krm->rows, krm->columns);
+		for (int i = 0; i < krm->len_AN; i++) {
+			res.array[IA[i]][JA[i]] = krm->AN[i];
+		}
+		res.un_zero = krm->len_AN;
+		if (IA != nullptr) delete[] IA;
+		if (JA != nullptr) delete[] JA;
+		return res;
+	}
+\end{lstlisting}
+
+\begin{lstlisting}[label = list8, caption = Программная реализация алгоритма сложения мартиц сажтаых по схеме Рейнбольдта-Местеньи]
+	KRMCompressedMatrix KRM_addition(KRMCompressedMatrix* _1, KRMCompressedMatrix* _2) {
+		if (_1->columns != _2->columns or _1->rows != _2->rows) {
+			cout << "Uncampatable sizes in addition: \n";
+			exit(1);
+		}
+		int rows = max(_1->rows, _2->rows);
+		int columns = max(_1->columns, _2->columns);
+		
+		// coords arrays
+		int* IA_1 = get_IA(_1);
+		int* JA_1 = get_JA(_1);
+		
+		
+		int* IA_2 = get_IA(_2);
+		int* JA_2 = get_JA(_2);
+		
+		map <pair<int, int>, int> coords_3;
+		for (int i = 0; i < _1->len_AN; i++) {
+			if (coords_3.find({IA_1[i], JA_1[i]}) != coords_3.end()) {
+				coords_3[{IA_1[i], JA_1[i]}] += _1->AN[i];
+			}
+			else {
+				coords_3[{IA_1[i], JA_1[i]}] = _1->AN[i]; 
+			}
+		}
+		
+		for (int i = 0; i < _2->len_AN; i++) {
+			if (coords_3.find({ IA_2[i], JA_2[i] }) != coords_3.end()) {
+				coords_3[{IA_2[i], JA_2[i]}] += _2->AN[i];
+			}
+			else {
+				coords_3[{IA_2[i], JA_2[i]}] = _2->AN[i];
+			}
+		}
+		
+		//removal the zeros
+		for (auto it = coords_3.begin(); it != coords_3.end(); ) {
+			if (it->second == 0) {
+				it = coords_3.erase(it); // removal the element and renewing the iterator
+			}
+			else {
+				++it; // move to the next
+			}
+		}
+		
+		int len_AN = coords_3.size();
+		
+		cout << "\n";
+		
+		KRMCompressedMatrix res(&coords_3, rows, columns);
+		if (JA_1 != nullptr) delete[] JA_1;
+		if (IA_1 != nullptr) delete[] IA_1;
+		if (JA_2 != nullptr) delete[] JA_2;
+		if (IA_2 != nullptr) delete[] IA_2;
+		
+		return res;
+	}
+\end{lstlisting}
+
+\begin{lstlisting}[label=list9, caption = реализаия алгоритма умножения матриц сжатых по схеме Рейнбольдта-Местеньи]
+	KRMCompressedMatrix KRM_multiplication(KRMCompressedMatrix* _1, KRMCompressedMatrix* _2) {
+		int* IA_1 = get_IA(_1);
+		int* JA_1 = get_JA(_1);
+		
+		// transponiruem
+		int* IA_2 = get_IA(_2);
+		int* JA_2 = get_JA(_2);
+		
+		map <pair<int, int>, int> coords_1;
+		for (int i = 0; i < _1->len_AN; i++) {
+			coords_1[{IA_1[i], JA_1[i]}] = _1->AN[i];
+		}
+		
+		map <pair<int, int>, int> coords_2;
+		for (int i = 0; i < _2->len_AN; i++) {
+			coords_2[{IA_2[i], JA_2[i]}] = _2->AN[i];
+		}
+		
+		int R = _1->rows;
+		int C = _2->columns;
+		
+		int sum = 0;
+		map <pair<int, int>, int> res_coords;
+		for (int i = 0; i < R; i++) {
+			for (int j = 0; j < C; j++) {
+				for (int k = 0; k < _1->columns; k++) {
+					if ((coords_1.find({i, k}) != coords_1.end()) and (coords_2.find({k, j}) != coords_2.end())) {
+						sum += coords_1[{i, k}] * coords_2[{k, j}];
+					}
+				}
+				// find sum
+				if (sum != 0) {
+					res_coords[{i, j}] = sum;
+					sum = 0;
+				}       
+			}
+		}
+		
+		KRMCompressedMatrix a(&res_coords, R, C);
+		
+		if (JA_1 != nullptr) delete[] JA_1;
+		if (IA_1 != nullptr) delete[] IA_1;
+		if (JA_2 != nullptr) delete[] JA_2;
+		if (IA_2 != nullptr) delete[] IA_2;
+		return a;
+	}
+\end{lstlisting}
+
+\section{Тестирование программы}
+В таблице~\ref{tab:tests1} и \ref{tab:tests2} представлены описания тестов по методологии чёрного ящика, все тесты пройдены успешно.
+\begin{table}[htbp]
+	\centering
+	\caption{Описание тестов по методологии чёрного ящика}
+	\begin{tabular}{|p{0.05\linewidth}|p{0.22\linewidth}|p{0.2\linewidth}|p{0.2\linewidth}|p{0.2\linewidth}|}
+		\hline
+		& \textbf{Описание теста} & \textbf{Входные данные} & \textbf{Ожидаемый результат} & \textbf{Полученный результат} \\
+		\hline
+		
+		\textbf{1} 
+		& проверка на обработку не валидных данных 
+		& 3 
+		& оповещение о некорректности данных и запрос новых данных 
+		& оповещение о некорректности данных и запрос новых данных \\
+		\hline
+		
+		\textbf{2} 
+		& проверка на обработку не валидных данных 
+		& 1 
+		& включение режима работы с матрицами через схему Дженнингса  
+		& включение режима работы с матрицами через схему Дженнингса \\
+		\hline
+		
+		\textbf{3} 
+		& проверка на обработку не валидных данных 
+		& 2
+		& включение режима работы с матрицами через схему Рейнбольдта-Местеньи 
+		& включение режима работы с матрицами через схему Рейнбольдта-Местеньи \\
+		\hline
+		
+		\textbf{4}
+		& проверка на обработку не валидных данных в Дженнингсе 
+		& SIZE;(2, 2);\newline 1;2;\newline 2;2;1; 
+		& оповещение о некорректности данных и завершение программы 
+		& оповещение о некорректности данных  и завершение программы \\
+		\hline
+		
+		\textbf{5} 
+		& проверка суммирования матриц в виде Дженнингса
+		&Файл 1:\newline 1 0 0 0\newline 0 2 3 0\newline 0 3 4 0\newline0 0 0 5\newline Файл 2:\newline2 3 0 0\newline 3 0 0 4\newline0 0 1 0\newline 0 4 0 5
+		& первая матрица упакованная:\newline AN: 1 2 3 4 5\newline D: 0 1 3 4\newline вторая матрица упакованная: \newline AN: 2 3 0 0 4 1 5\newline D: 0 2 5 6 \newline результирующая матрица упакованная: \newline AN: 3 3 2 3 4 5 10\newline D: 0 2 5 6 \newline результирующая матрица:\newline 3 3 0 0\newline
+		3 2 3 4\newline 
+		0 3 5 0\newline 
+		0 4 0 10
+		& первая матрица упакованная:\newline AN: 1 2 3 4 5\newline D: 0 1 3 4\newline вторая матрица упакованная: \newline AN: 2 3 0 0 4 1 5\newline D: 0 2 5 6 \newline результирующая матрица упакованная: \newline AN: 3 3 2 3 4 5 10\newline D: 0 2 5 6 \newline результирующая матрица:\newline 3 3 0 0\newline
+		3 2 3 4\newline 
+		0 3 5 0\newline 
+		0 4 0 10 \\
+		\hline
+	\end{tabular}
+	\label{tab:tests1}
+\end{table}
+\newpage
+\begin{table}[htbp]
+	\centering
+	\caption{Описание тестов по методологии чёрного ящика}
+	\begin{tabular}{|p{0.05\linewidth}|p{0.22\linewidth}|p{0.2\linewidth}|p{0.2\linewidth}|p{0.2\linewidth}|}
+		\hline
+		& \textbf{Описание теста} & \textbf{Входные данные} & \textbf{Ожидаемый результат} & \textbf{Полученный результат} \\
+		\hline
+		
+		\textbf{6} 
+		& проверка для схемы Дженнингса на сложение матриц с итоговой нулевой
+		& Файл 1:\newline 0 10 0 \newline 0 0 0\newline 0 0 0\newline Файл 2:\newline 0 -10 0\newline 0 0 0\newline 0 0 0 
+		& первая матрица упакованная:\newline AN: 0 10 0 0 \newline D: 0 2 3\newline вторая матрица упакованная: \newline AN:  0 -10 0 0\newline D: 0 2 3\newline результирующая матрица упакованная: \newline AN: 0 0 0\newline D: 0 1 2\newline результирующая матрица:\newline 0 0 0\newline
+		0 0 0\newline 
+		0 0 0
+		&первая матрица упакованная:\newline AN: 0 10 0 0 \newline D: 0 2 3\newline вторая матрица упакованная: \newline AN:  0 -10 0 0\newline D: 0 2 3\newline результирующая матрица упакованная: \newline AN: 0 0 0\newline D: 0 1 2\newline результирующая матрица:\newline 0 0 0\newline
+		0 0 0\newline 
+		0 0 0
+		\\
+		\hline
+		
+		\textbf{7} 
+		& проверка для КРМ на умножение матриц
+		& Файл 1:\newline 0 10 0\newline 0 0 0\newline20 80 0\newline Файл 2:\newline 0 -10 0\newline0 0 0\newline -20 -80 0
+		& 0 0 0\newline 0 0 0 \newline 0 -200 0 \newline упакованная результирующая матрица:\newline	AN: -200\newline NR: 0\newline NC: 0\newline JR: -1 -1 0\newline JC: -1 0 -1
+		& 0 0 0\newline 0 0 0 \newline 0 -200 0 \newline упакованная результирующая матрица:\newline	AN: -200\newline NR: 0\newline NC: 0\newline JR: -1 -1 0\newline JC: -1 0 -1\\
+		\hline
+	\end{tabular}
+	\label{tab:tests2}
+\end{table}
+\clearpage

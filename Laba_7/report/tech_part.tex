@@ -1,0 +1,139 @@
+\chapter{Технологическая часть}
+
+\section{Выбор средств реализации}
+Для программной реализации алгоритма использовалась среда разработки Visual Studio 2022, язык программирования, на котором была выполнена реализации алгоритмов --- C++.
+Для компиляции кода использовался компилятор MSVC. Исследование проводилось на ноутбуке (64--разрядная операционная система, процессор x64, частота процессора 3.1~ГГц, модель процессора 12th Gen Intel(R) Core(TM) i5-12500H, оперативная память 16~ГБ)
+\section{Реализация алгоритмов}
+В листингe \ref{list1} представлена программная реализация описанных классов и функций.
+
+\section{Тестирование программы}
+В таблице~\ref{tab:tests1} и \ref{tab:tests2} представлены описания тестов по методологии чёрного ящика, все тесты пройдены успешно.
+\begin{table}[htbp]
+	\centering
+	\caption{Описание тестов по методологии чёрного ящика}
+	\begin{tabular}{|p{0.05\linewidth}|p{0.22\linewidth}|p{0.2\linewidth}|p{0.2\linewidth}|p{0.2\linewidth}|}
+		\hline
+		& \textbf{Описание теста} & \textbf{Входные данные} & \textbf{Ожидаемый результат} & \textbf{Полученный результат} \\
+		\hline
+		
+		\textbf{1} 
+		& проверка на обработку не валидных данных 
+		& dhsux
+		& оповещение о некорректности данных и завершение работы программы 
+		& оповещение о некорректности данных и завершение работы программы  \\
+		\hline
+		
+		\textbf{2} 
+		& операции над положительными числами меньше $2^{32}$
+		& 123456 \newline 321654
+		& first number: $1^1 2^6 3^1 643^1$\newline second number: $1^1 2^1 3^1 53609^1$ \newline
+		multiplication result: $1^2 2^7 3^2 643^1 53609^1$\newline div: 0 \newline
+		mod: $1^1 2^5 643^1$ \newline
+		compare: < \newline
+		sum: $1^2 2^1 3^1 5^1 37^1 401^1$\newline
+		diff: $- 1^2 2^1 3^2 7^1 11^2 13^1$\newline
+		& first number: $1^1 2^6 3^1 643^1$\newline second number: $1^1 2^1 3^1 53609^1$ \newline
+		multiplication result: $1^2 2^7 3^2 643^1 53609^1$\newline div: 0 \newline
+		mod: $1^1 2^5 643^1$ \newline
+		compare: < \newline
+		sum: $1^2 2^1 3^1 5^1 37^1 401^1$\newline
+		diff: $- 1^2 2^1 3^2 7^1 11^2 13^1$\newline \\
+		\hline
+		
+		\textbf{3} 
+		& операции над положительными числами больше чем $2^{32}$
+		& 5296967296 \newline 519696729
+		& first number: $1^1 2^7 41382557^1$ \newline
+		second number: $1^1 3^4 2161^1 2969^1$ \newline
+		multiplication result: $1^2 2^7 3^4 2161^1 2969^1$ \newline $41382557^1$ \newline
+		div: $1^1 2^1 5^1$ \newline
+		mod: $1^1 2^1 491^1 101833^1$ \newline
+		compare: > \newline
+		sum: $1^2 5^2 232666561^1$ \newline
+		diff: $1^2 19^1 139^1 1808887^1$
+		& first number: $1^1 2^7 41382557^1$ \newline
+		second number: $1^1 3^4 2161^1 2969^1$ \newline
+		multiplication result: $1^2 2^7 3^4 2161^1 2969^1$ \newline $41382557^1$ \newline
+		div: $1^1 2^1 5^1$ \newline
+		mod: $1^1 2^1 491^1 101833^1$ \newline
+		compare: > \newline
+		sum: $1^2 5^2 232666561^1$ \newline
+		diff: $1^2 19^1 139^1 1808887^1$ \\
+		\hline
+		
+		\textbf{4}
+		& проверка на корректность операций над нулями
+		& 0\newline 0 
+		& first number: 0 \newline
+		second number: 0 \newline
+		multiplication result: 0 \newline
+ 		div: DIVISION ERROR \newline
+		mod: DIVISION ERROR \newline
+		compare: == \newline
+		sum: 0 
+				diff: 0 
+		& first number: 0 \newline
+		second number: 0 \newline
+		multiplication result: 0 \newline
+		div: DIVISION ERROR \newline
+		mod: DIVISION ERROR \newline
+		compare: == \newline
+		sum: 0
+		diff: 0  \\
+		\hline
+	\end{tabular}
+	\label{tab:tests1}
+\end{table}
+\newpage
+\begin{table}[htbp]
+	\centering
+	\caption{Описание тестов по методологии чёрного ящика}
+	\begin{tabular}{|p{0.05\linewidth}|p{0.22\linewidth}|p{0.2\linewidth}|p{0.2\linewidth}|p{0.2\linewidth}|}
+		\hline
+		& \textbf{Описание теста} & \textbf{Входные данные} & \textbf{Ожидаемый результат} & \textbf{Полученный результат} \\
+		\hline
+		
+		\textbf{5} 
+		& проверка корректности операций при одном отрицательном числе
+		& -34534 \newline -2345
+		& second number: $- 1^1 5^1 7^1 67^1$ \newline
+		multiplication result: $1^2 2^1 5^1 7^1 31^1 67^1 557^1$ \newline
+		div: $1^1 2^1 7^1$ \newline
+		mod: $1^1 2^3 3^1 71^1$ \newline
+		compare: < \newline
+		sum: $- 1^2 3^1 19^1 647^1$ \newline
+		diff: $- 1^2 32189^1$ \newline
+		&second number: $- 1^1 5^1 7^1 67^1$ \newline
+		multiplication result: $1^2 2^1 5^1 7^1 31^1 67^1 557^1$ \newline
+		div: $1^1 2^1 7^1$ \newline
+		mod: $1^1 2^3 3^1 71^1$ \newline
+		compare: < \newline
+		sum: $- 1^2 3^1 19^1 647^1$ \newline
+		diff: $- 1^2 32189^1$ \newline
+		\\
+		\hline
+		
+		\textbf{6} 
+		& проверка на корректность операций с одним отрицательным числом
+		& 23452 \newline -354
+		& first number: $1^1 2^2 11^1 13^1 41^1$ \newline
+		second number: $- 1^1 2^1 3^1 59^1$ \newline
+		multiplication result: $- 1^2 2^3 3^1 11^1 13^1 41^1$ \newline $59^1$ \newline
+		div: $- 1^1 2^1 3^1 11^1$ \newline
+		mod: $- 1^1 2^2 11^1$ \newline
+		compare: > \newline
+		sum: $1^2 2^1 11549^1$ \newline
+		diff: $1^2 2^1 11903^1$ \newline
+		& first number: $1^1 2^2 11^1 13^1 41^1$ \newline
+		second number: $- 1^1 2^1 3^1 59^1$ \newline
+		multiplication result: $- 1^2 2^3 3^1 11^1 13^1 41^1$ \newline $59^1$ \newline
+		div: $- 1^1 2^1 3^1 11^1$ \newline
+		mod: $- 1^1 2^2 11^1$ \newline
+		compare: > \newline
+		sum: $1^2 2^1 11549^1$ \newline
+		diff: $1^2 2^1 11903^1$ \newline\\
+		\hline
+	\end{tabular}
+	\label{tab:tests2}
+\end{table}
+\clearpage
