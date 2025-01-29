@@ -1,0 +1,145 @@
+\ssr{Приложение А}
+
+\begin{lstlisting}[label = list1, caption = Программная реализация описанных алгоритмов структур]
+	int ROWS = 0;
+	int COLUMNS = 0;
+	using my_value_t = std::pair<std::string, size_t>;
+	using my_container_t = std::vector<my_value_t>;
+	
+	struct Node {
+		std::string name;
+		Node* parent;
+		Node* left_child;
+		Node* right_child;
+		
+		Node(std::string nm, Node* prt, Node* lchild = nullptr, Node* rchild = nullptr) :
+		name(nm), parent(prt), left_child(lchild), right_child(rchild) {}
+		
+		Node(std::string nm) : name(nm), parent(nullptr), left_child(nullptr), right_child(nullptr) {}
+	};
+	
+	class HuffmanTree {
+		Node* root = nullptr;
+		std::vector<char> letters;
+		
+		public:
+		void get_codes(std::string name, Node* current_node, std::map<char, std::string>& table) {
+			if ((current_node->left_child == nullptr) and (current_node->right_child == nullptr)) {
+				table[current_node->name[0]] = name;
+				return;
+			}
+			if (current_node->left_child) {
+				get_codes(name + "0", current_node->left_child, table);
+			}
+			if (current_node->right_child) {
+				get_codes(name + "1", current_node->right_child, table);
+			}
+		}
+		
+		void set_letters(const std::vector<char>& buf) 
+		{
+			letters.clear();
+			letters.reserve(buf.size());
+			letters.append_range(buf);
+		}
+		
+		template <typename CMP>
+		void make_tree(std::priority_queue<my_value_t, my_container_t, CMP>& q)
+		{
+			my_value_t left, right;
+			size_t total_weight;
+			Node* tmp_root = nullptr;
+			Node* left_child;
+			Node* right_child;
+			std::map<std::string, Node*> storage;
+			
+			while (q.size() > 1)
+			{				
+				right = q.top();
+				q.pop();
+				
+				left = q.top();
+				q.pop();
+				
+				tmp_root = new Node(left.first + right.first);
+				
+				total_weight = right.second + left.second;
+				right_child = storage.contains(right.first) ? storage[right.first] : new Node(right.first, tmp_root);
+				left_child = storage.contains(left.first) ? storage[left.first] : new Node(left.first, tmp_root);
+				
+				q.push(std::make_pair(left.first + right.first, total_weight));
+				
+				tmp_root->left_child = left_child;
+				tmp_root->right_child = right_child;
+				
+				storage.insert(std::make_pair(left.first + right.first, tmp_root));
+			}
+			root = tmp_root;
+		}
+		
+		auto create_table()
+		{
+			std::ofstream file_table;
+			std::map<char, std::string> table;
+			
+			file_table.open("table.txt", std::ios::out);
+			
+			if (!file_table.is_open()) {
+				std::cerr << "ERROR!!!" << std::endl;
+				exit(1);
+			}
+			
+			get_codes("", root, table);
+			
+			file_table << ROWS << std::endl;
+			file_table << COLUMNS << std::endl;
+			for (const auto& item : table) {
+				std::cout << item.first << ":" << item.second << std::endl;
+				file_table << item.first << ":" << item.second << std::endl;
+			}
+			file_table.close();
+			return table;
+		}
+		
+		void code(std::string flow, std::map<char, std::string>& table) {
+			std::ofstream file_b;
+			
+			file_b.open("coded.bin", std::ios::binary);
+			
+			std::vector<uint8_t> packed_data;
+			uint8_t byte = 0;
+			int bit_count = 0;
+			
+			std::string coded_flow;
+			for (int ch : flow) {
+				coded_flow += table[ch];
+			}
+			std::cout << flow << "\n";
+			std::cout << coded_flow;
+			
+			for (char bit : coded_flow) {
+				byte = (byte << 1) | (bit - '0');
+				bit_count++;
+				if (bit_count == 8) {
+					packed_data.push_back(byte);
+					byte = 0;
+					bit_count = 0;
+				}
+			}
+			
+			if (bit_count > 0) {
+				byte <<= (8 - bit_count);
+				packed_data.push_back(byte);
+			}
+			
+			std::ofstream file("coded.bin", std::ios::binary);
+			if (file.is_open()) {
+				file.write(reinterpret_cast<const char*>(packed_data.data()), packed_data.size());
+				file.close();
+			}
+			
+			file_b.close();
+		}
+		
+	};
+\end{lstlisting}

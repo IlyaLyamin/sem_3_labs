@@ -1,0 +1,42 @@
+\chapter{Технологическая часть}
+
+\section{Выбор средств реализации}
+Для программной реализации алгоритма использовалась среда разработки Visual Studio 2022, язык программирования, на котором была выполнена реализации алгоритмов --- C++.
+Для компиляции кода использовался компилятор MSVC. Исследование проводилось на ноутбуке (64--разрядная операционная система, процессор x64, частота процессора 3.1~ГГц, модель процессора 12th Gen Intel(R) Core(TM) i5-12500H, оперативная память 16~ГБ)
+\section{Реализация алгоритмов}
+В листинге \ref{list1} представлена программная реализация описанного класса.
+
+\section{Тестирование программы}
+В таблице~\ref{tab:tests} представлены описания тестов по методологии чёрного ящика, все тесты пройдены успешно.
+\begin{table}[htbp]
+	\centering
+	\caption{Описание тестов по методологии чёрного ящика}
+	\begin{tabular}{|p{0.05\linewidth}|p{0.22\linewidth}|p{0.2\linewidth}|p{0.2\linewidth}|p{0.2\linewidth}|}
+		\hline
+		& \textbf{Описание теста} & \textbf{Входные данные} & \textbf{Ожидаемый результат} & \textbf{Полученный результат} \\
+		\hline
+		
+		\textbf{1} 
+		& проверка кодирования матрицы с элементами меньше десяти
+		&Файл 1:3 \newline 2 \newline 1 0/\newline 2 3/\newline 4 0/
+		& :10 \newline/:01 \newline0:000 \newline1:0011 \newline2:110 \newline3:0010 \newline4:111
+		&  :10 \newline/:01 \newline0:000 \newline1:0011 \newline2:110 \newline3:0010 \newline4:111\\
+		\hline
+
+		\textbf{2} 
+		& проверка кодирования матрицы с элементами больше десяти
+		&Файл 1: \newline3 \newline3 \newline 10 0 12/\newline 12 23 34/\newline 41 30 1/
+		& :01 \newline/:0000  \newline0:100  \newline1:11  \newline2:001  \newline3:101 \newline4:0001
+		& :01 \newline/:0000  \newline0:100  \newline1:11  \newline2:001  \newline3:101 \newline4:0001\\
+		\hline
+		
+		\textbf{3} 
+		& проверка кодирования матрицы с элементами меньше нуля
+		&Файл 1: \newline3 \newline3 \newline -10 0 -12/\newline 12 -23 34/\newline -41 30 -1/
+		& :10 \newline-:010 \newline/:110 \newline0:011 \newline1:001 \newline2:0000 \newline3:111 \newline4:0001
+		& :10 \newline-:010 \newline/:110 \newline0:011 \newline1:001 \newline2:0000 \newline3:111 \newline4:0001\\
+		\hline
+	\end{tabular}
+	\label{tab:tests}
+\end{table}
+\clearpage
